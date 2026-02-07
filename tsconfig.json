@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noImplicitAny": true,
+    "useDefineForClassFields": true,
+
+    "sourceMap": true,
+    "outDir": "dist",
+
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
+
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
+}

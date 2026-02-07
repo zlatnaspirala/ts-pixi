@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { getDataFromLink } from "../utils/utils";
+import { getDataFromLink, isMobile } from "../utils/utils";
 import { Scene } from "../core/scene";
 import { loadUrlTexture } from "../resources/textures";
 import { Avatar, Emoji, DialogLine, DialogSide } from "./interfaces";
@@ -9,6 +9,8 @@ import gsap from "gsap";
 import { DialogWindow } from "../components/DialogBox";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
+import { createGlowFilter } from "../shaders/base";
+import { magicWordsTextStyle } from "../resources/literails";
 
 export class MagicWords extends Scene {
   private link1: string="https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords";
@@ -17,9 +19,13 @@ export class MagicWords extends Scene {
   private emojiTextures=new Map<string, PIXI.Texture>();
   private dialogLines: DialogLine[]=[];
   private dialogAppearInterval: number=350;
+  private window: DialogWindow|null;
+  private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
+  private testFilters: any[] = [];
 
   constructor () {
     super();
+    this.window=null;
     getDataFromLink(this.link1).then((r: any) => {
       console.log(r.avatars)
       const avatarPromises=r.avatars.map((a: Avatar) =>
@@ -46,8 +52,8 @@ export class MagicWords extends Scene {
 
   private renderDialog() {
     let yPos=20;
-    const window=new DialogWindow();
-    const contentWidth=665;
+    this.window=new DialogWindow();
+    const contentWidth=isMobile()? perToPixWidth(90):665;
 
     this.dialogLines.forEach((line, i) => {
       const dialogBox=this.createDialogBox(line, contentWidth);
@@ -56,7 +62,7 @@ export class MagicWords extends Scene {
       dialogBox.y=0;
       dialogBox.alpha=0;
       dialogBox.scale.set(0.95);
-      window.addChild(dialogBox);
+      if(this.window) this.window.addChild(dialogBox);
       const baseDelay=i*this.dialogAppearInterval/1000;
       gsap.to(dialogBox, {
         y: targetY,
@@ -81,9 +87,8 @@ export class MagicWords extends Scene {
         }
       });
     });
-    this.addChild(window);
+    this.addChild(this.window);
   }
-
 
   private createDialogBox(line: DialogLine, stageWidth=800): PIXI.Container {
     const container=new PIXI.Container();
@@ -120,6 +125,16 @@ export class MagicWords extends Scene {
       avatar=new PIXI.Sprite(this.avatarTextures.get(line.name)!);
       avatar.width=avatar.height=avatarSize;
       avatarContainer.addChild(avatar);
+
+      // const blurFilter=new PIXI.BlurFilter();
+      // blurFilter.blur=1.1;
+      // blurFilter.enabled=true;
+      // avatar.filters=[blurFilter];
+      let myF=createGlowFilter();
+      this.testFilters.push(myF)
+      // this.testFilter.resolution=window.devicePixelRatio;
+      avatar.filters=[myF];
+      //
 
       // Circular mask - FIX: mask must be same size as avatar
       const avatarMask=new PIXI.Graphics();
@@ -189,19 +204,13 @@ export class MagicWords extends Scene {
     (container as any)._textMask=textMask;
     (container as any)._textMaskStartX=textContainer.x;
     (container as any)._textWidth=textContainer.width;
-
     return container;
   }
 
   private createText(text: string): PIXI.Text {
-    // PixiJS v8 syntax
     return new PIXI.Text({
       text: text,
-      style: {
-        fontFamily: 'Arial',
-        fontSize: 18,
-        fill: 0xffffff,
-      }
+      style: magicWordsTextStyle
     });
   }
 
@@ -235,25 +244,20 @@ export class MagicWords extends Scene {
         content: text.substring(lastIndex)
       });
     }
-
     // Layout with word wrapping
     let xPos=0;
     let yPos=0;
     const lineHeight=24;
-
     parts.forEach(part => {
       if(part.type==='text') {
         const words=part.content.split(' ');
-
         words.forEach((word, i) => {
           const textSprite=this.createText(word+(i<words.length-1? ' ':''));
-
           // Word wrap
           if(xPos+textSprite.width>maxWidth&&xPos>0) {
             xPos=0;
             yPos+=lineHeight;
           }
-
           textSprite.x=xPos;
           textSprite.y=yPos;
           container.addChild(textSprite);
@@ -264,13 +268,11 @@ export class MagicWords extends Scene {
           const emoji=new PIXI.Sprite(this.emojiTextures.get(part.content)!);
           emoji.width=20;
           emoji.height=20;
-
           // Word wrap for emoji
           if(xPos+emoji.width>maxWidth&&xPos>0) {
             xPos=0;
             yPos+=lineHeight;
           }
-
           emoji.x=xPos;
           emoji.y=yPos;
           container.addChild(emoji);
@@ -278,12 +280,16 @@ export class MagicWords extends Scene {
         }
       }
     });
-
     return container;
   }
 
   update(deltaMS: number) {
-    // const now=performance.now();
+    if(this.testFilters) {
+      this.testFilters.forEach((f) => {
+        f.resources.timeUniforms.uniforms.uTime+=0.001*(deltaMS/16.67);
+        f.resources.timeUniforms.update()
+      })
+    }
   }
 
   destroyScene() {}

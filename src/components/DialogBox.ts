@@ -1,3 +1,4 @@
+import { windowTitleStyle } from "../resources/literails";
 import * as PIXI from "pixi.js";
 
 export class DialogWindow extends PIXI.Container {
@@ -30,12 +31,7 @@ export class DialogWindow extends PIXI.Container {
     this.header.addChild(headerBg);
     const title=new PIXI.Text({
       text: 'Dialog',
-      style: {
-        fontFamily: 'Arial',
-        fontSize: 24,
-        fill: 0xffffff,
-        fontWeight: 'bold'
-      }
+      style: windowTitleStyle
     });
     title.x=20;
     title.y=(this.headerHeight-title.height)/2;

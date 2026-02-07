@@ -5,18 +5,25 @@ export class SceneManager {
   private static app: PIXI.Application;
   private static currentScene?: Scene;
 
-  static init(app: PIXI.Application) {
-    this.app = app;
+  static init(app: PIXI.Application): void {
+    this.app=app;
   }
 
-  static change(scene: Scene) {
-    if (this.currentScene) {
+  static change(newScene: Scene): void {
+    // Stop and remove old scene
+    if(this.currentScene) {
+      this.currentScene.onStop(); // ← Stop ticker
       this.app.stage.removeChild(this.currentScene);
-      this.currentScene.destroyScene();
+      this.currentScene.destroy();
     }
+    // Add and start new scene
+    this.currentScene=newScene;
+    this.app.stage.addChild(newScene);
+    this.currentScene.onStart(this.app); // ← Start ticker
+  }
 
-    this.currentScene = scene;
-    this.app.stage.addChild(scene);
+  static getCurrentScene(): Scene|undefined {
+    return this.currentScene;
   }
 
   static update(delta: number) {

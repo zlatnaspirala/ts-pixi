@@ -1,5 +1,7 @@
+import { isMobile } from "../utils/utils";
 import { windowTitleStyle } from "../resources/literails";
 import * as PIXI from "pixi.js";
+import { perToPixWidth } from "../core/position";
 
 export class DialogWindow extends PIXI.Container {
   private background: PIXI.Graphics;
@@ -9,8 +11,8 @@ export class DialogWindow extends PIXI.Container {
   private isDragging=false;
   private dragOffset={ x: 0, y: 0 };
 
-  private windowWidth=700;
-  private windowHeight=window.innerHeight*0.9;
+  private windowWidth= isMobile() ? perToPixWidth(90) : 700;
+  private windowHeight=window.innerHeight*0.8;
   private headerHeight=60;
   private contentHeight: number;
 

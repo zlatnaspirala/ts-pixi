@@ -1,8 +1,9 @@
+import * as PIXI from "pixi.js";
 import { Scene } from "../core/scene";
 import { CardStack } from "../components/card-stack";
 import { Card } from "../components/card";
 import { loadTexture } from "../resources/textures";
-import { createButton } from "../services/helpers-methods";
+import { addFPS, createButton } from "../services/helpers-methods";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
@@ -12,15 +13,16 @@ export class AceOfShadowsScene extends Scene {
   private stack1: CardStack|any;
   private stack2: CardStack|any;
   private totalStackCards=144;
+  private addFPS: Function;
+  private fpsText: PIXI.Text|undefined;
 
   constructor () {
     super();
-
     loadTexture("/assets/textures/card1.webp").then((cardTexture) => {
       this.stack1=new CardStack();
       this.stack2=new CardStack();
-      this.stack1.position.set(window.innerWidth/3, window.innerHeight/3);
-      this.stack2.position.set(window.innerWidth/3*2, window.innerHeight/3);
+      this.stack1.position.set(window.innerWidth/3, window.innerHeight/4);
+      this.stack2.position.set(window.innerWidth/3*2, window.innerHeight/4);
       this.addChild(this.stack1);
       this.addChild(this.stack2);
       for(let i=0; i<this.totalStackCards; i++) {
@@ -35,6 +37,8 @@ export class AceOfShadowsScene extends Scene {
     btnBack.position.y=perToPixHeight(5);
     btnBack.position.x=perToPixWidth(5);
     this.addChild(btnBack);
+    this.addFPS=addFPS.bind(this);
+    this.fpsText=this.addFPS(this);
   }
 
   update(deltaMS: number) {
@@ -51,6 +55,7 @@ export class AceOfShadowsScene extends Scene {
         e.position.set(e.pos.x, e.pos.y);
       }
     }
+    if (this.app && this.fpsText) this.fpsText.text = `${Math.round(this.app.ticker.FPS)}`;
   }
 
   startCardMovement() {

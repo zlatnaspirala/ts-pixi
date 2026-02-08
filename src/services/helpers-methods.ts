@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import gsap from 'gsap';
 
 /**
  * @description
@@ -8,9 +7,8 @@ import gsap from 'gsap';
  * Only rule function must be standalone 
  * or single responsibilly.
  */
-
 export function createButton(label: string, onClick: () => void): PIXI.Text {
-  const btn = new PIXI.Text({
+  const btn=new PIXI.Text({
     text: label,
     style: {
       fontSize: 14,
@@ -18,38 +16,49 @@ export function createButton(label: string, onClick: () => void): PIXI.Text {
     }
   });
 
-  btn.eventMode = 'static';
-  btn.cursor = 'pointer';
+  btn.eventMode='static';
+  btn.cursor='pointer';
   btn.on('pointerdown', onClick);
   return btn;
 }
 
-export function makeDraggable(handle: PIXI.Container) {
-  let dragging = false;
-  const offset = new PIXI.Point();
-
-  handle.eventMode = "static";
-  handle.cursor = "grab";
-
-  handle.on("pointerdown", (e) => {
-    dragging = true;
-    offset.set(
-      e.global.x - this.x,
-      e.global.y - this.y
-    );
-    handle.cursor = "grabbing";
+/**
+ * Bind this function in any scene class.
+ * @param parent 
+ * @returns 
+ */
+export function addFPS(parent: PIXI.Container) {
+  const fpsStyle=new PIXI.TextStyle({
+    fontFamily: 'monospace',
+    fontSize: 12,
+    fill: '#15ff00',
+    stroke: { color: '#000000', width: 4 },
+    fontWeight: 'bold'
   });
+  const fpsTextTitle=new PIXI.Text({ text: 'FPS:', style: fpsStyle });
+  const fpsText=new PIXI.Text({ text: '', style: fpsStyle });
+  fpsTextTitle.x=5;
+  fpsTextTitle.y=5;
+  fpsText.x=30;
+  fpsText.y=5;
+  parent.addChild(fpsTextTitle);
+  parent.addChild(fpsText);
+  return fpsText;
+}
 
-  handle.on("pointerup", () => {
-    dragging = false;
-    handle.cursor = "grab";
-  });
-
-  handle.on("pointermove", (e) => {
-    if (!dragging) return;
-    this.position.set(
-      e.global.x - offset.x,
-      e.global.y - offset.y
-    );
-  });
+export function genFramesFromTex(ROWS: number, COLS: number, texture: PIXI.Texture) {
+  let frames = [];
+  const frameWidth = texture.width / COLS;
+  const frameHeight = texture.height / ROWS;
+  for(let y=0; y<ROWS; y++) {
+    for(let x=0; x<COLS; x++) {
+      frames.push(
+        new PIXI.Texture({
+          source: texture.source,
+          frame: new PIXI.Rectangle(x*frameWidth, y*frameHeight, frameWidth, frameHeight),
+        })
+      );
+    }
+  }
+  return frames;
 }

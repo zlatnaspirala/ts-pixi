@@ -4,9 +4,9 @@ import { Scene } from "../core/scene";
 import { loadUrlTexture } from "../resources/textures";
 import { Avatar, Emoji, DialogLine, DialogSide } from "./interfaces";
 import { perToPixHeight, perToPixWidth } from "../core/position";
-import { createButton } from "../services/helpers-methods";
+import { addFPS, createButton } from "../services/helpers-methods";
 import gsap from "gsap";
-import { DialogWindow } from "../components/DialogBox";
+import { DialogWindow } from "../components/dialogBox";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
 import { createGlowFilter } from "../shaders/base";
@@ -20,8 +20,10 @@ export class MagicWords extends Scene {
   private dialogLines: DialogLine[]=[];
   private dialogAppearInterval: number=350;
   private window: DialogWindow|null;
-  private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
+  // private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
   private testFilters: any[] = [];
+  private addFPS: Function;
+  private fpsText: PIXI.Text|undefined;
 
   constructor () {
     super();
@@ -48,6 +50,8 @@ export class MagicWords extends Scene {
     btnBack.position.y=perToPixHeight(5);
     btnBack.position.x=perToPixWidth(5);
     this.addChild(btnBack);
+    this.addFPS = addFPS.bind(this);
+    this.fpsText = this.addFPS(this);
   }
 
   private renderDialog() {
@@ -92,6 +96,9 @@ export class MagicWords extends Scene {
 
   private createDialogBox(line: DialogLine, stageWidth=800): PIXI.Container {
     const container=new PIXI.Container();
+    if (this.avatars.get(line.name) == null || this.avatars.get(line.name) == undefined) {
+      console.log("NO AVATAR REGISTRED ICON DETECT")
+    }
     const avatarInfo=this.avatars.get(line.name);
     const side=avatarInfo?.position??"left";
 
@@ -125,7 +132,6 @@ export class MagicWords extends Scene {
       avatar=new PIXI.Sprite(this.avatarTextures.get(line.name)!);
       avatar.width=avatar.height=avatarSize;
       avatarContainer.addChild(avatar);
-
       // const blurFilter=new PIXI.BlurFilter();
       // blurFilter.blur=1.1;
       // blurFilter.enabled=true;
@@ -135,24 +141,20 @@ export class MagicWords extends Scene {
       // this.testFilter.resolution=window.devicePixelRatio;
       avatar.filters=[myF];
       //
-
       // Circular mask - FIX: mask must be same size as avatar
       const avatarMask=new PIXI.Graphics();
       avatarMask.circle(avatarSize/2, avatarSize/2, avatarSize/2);
       avatarMask.fill(0xffffff);
       avatarContainer.addChild(avatarMask);
       avatar.mask=avatarMask;
-
       // Neon ring around avatar - THICKER
       const avatarRing=new PIXI.Graphics();
       avatarRing.circle(avatarSize/2, avatarSize/2, avatarSize/2);
       avatarRing.stroke({ width: 4, color: bubbleColor, alpha: 0.9 });
       avatarContainer.addChild(avatarRing);
-
-      avatar=avatarContainer as any; // Use container as avatar
+      avatar=avatarContainer as any;
     }
 
-    // --- Layout ---
     if(side==="left") {
       if(avatar) {
         avatar.x=5;
@@ -290,6 +292,7 @@ export class MagicWords extends Scene {
         f.resources.timeUniforms.update()
       })
     }
+    if (this.app && this.fpsText) this.fpsText.text = `${Math.round(this.app.ticker.FPS)}`;
   }
 
   destroyScene() {}

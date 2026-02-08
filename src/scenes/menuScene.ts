@@ -5,13 +5,14 @@ import { SceneManager } from "../core/sceneManager";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { mainMenuBtnStyle } from "../resources/literails";
 import { MagicWords } from "./magicWords";
+import { PhoenixFlameScene } from "./phoenixFlame";
 
 export class MenuScene extends Scene {
   constructor () {
     super();
     this.addBtn("Ace of Shadows", AceOfShadowsScene);
     this.addBtn("Magic Words", MagicWords);
-    this.addBtn("Phoenix Flame", MagicWords);
+    this.addBtn("Phoenix Flame", PhoenixFlameScene);
   }
 
   addBtn(t: string, Class: new () => Scene) {

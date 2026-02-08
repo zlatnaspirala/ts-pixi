@@ -10,8 +10,15 @@ export class DialogWindow extends PIXI.Container {
   private scrollArea: PIXI.Container;
   private isDragging=false;
   private dragOffset={ x: 0, y: 0 };
+  // mobile
+  private isScrolling=false;
+  private lastPointerY=0;
 
-  private windowWidth= isMobile() ? perToPixWidth(90) : 700;
+  private scrollVelocity=0;
+  private friction=0.95;     // 0.90–0.95 sweet spot
+  private minVelocity=0.1;
+
+  private windowWidth=isMobile()? perToPixWidth(90):700;
   private windowHeight=window.innerHeight*0.8;
   private headerHeight=60;
   private contentHeight: number;
@@ -38,25 +45,19 @@ export class DialogWindow extends PIXI.Container {
     title.x=20;
     title.y=(this.headerHeight-title.height)/2;
     this.header.addChild(title);
-
     this.header.eventMode='static';
     this.header.cursor='move';
-    this.header.on('pointerdown', (e) => this.onDragStart(e));
+    this.header.on('pointerdown', this.onDragStart, this);
+    this.header.on('pointermove', this.onDragMove, this);
+    this.header.on('pointerup', this.onDragEnd, this);
+    this.header.on('pointerupoutside', this.onDragEnd, this);
     this.addChild(this.header);
-
     this.scrollArea=new PIXI.Container();
     this.scrollArea.x=15;
     this.scrollArea.y=this.headerHeight+10;
-    // Set bounds for hitArea
-    this.scrollArea.hitArea=new PIXI.Rectangle(
-      0,
-      0,
-      this.windowWidth-30,
-      this.contentHeight
-    );
+    this.scrollArea.hitArea=new PIXI.Rectangle(0, 0, this.windowWidth-30, this.contentHeight);
     this.scrollArea.eventMode='static';
     this.addChild(this.scrollArea);
-
     // Content container
     this.contentContainer=new PIXI.Container();
     this.scrollArea.addChild(this.contentContainer);
@@ -70,47 +71,91 @@ export class DialogWindow extends PIXI.Container {
     this.y=(window.innerHeight-this.windowHeight)/2;
   }
 
-  private onDragStart(event: PIXI.FederatedPointerEvent): void {
+  private onDragStart(e: PIXI.FederatedPointerEvent): void {
     this.isDragging=true;
-    const position=event.global;
-    this.dragOffset.x=position.x-this.x;
-    this.dragOffset.y=position.y-this.y;
-
-    this.header.on('pointermove', (e) => this.onDragMove(e));
-    this.header.on('pointerup', () => this.onDragEnd());
-    this.header.on('pointerupoutside', () => this.onDragEnd());
+    this.dragOffset.x=e.global.x-this.x;
+    this.dragOffset.y=e.global.y-this.y;
+    this.eventMode='static';
+    this.header.on('pointermove', this.onDragMove, this);
+    this.header.on('pointerup', this.onDragEnd, this);
+    this.header.on('pointerupoutside', this.onDragEnd, this);
   }
 
-  private onDragMove(event: PIXI.FederatedPointerEvent): void {
-    if(this.isDragging) {
-      const position=event.global;
-      this.x=position.x-this.dragOffset.x;
-      this.y=position.y-this.dragOffset.y;
-    }
+  private onDragMove(e: PIXI.FederatedPointerEvent): void {
+    if(!this.isDragging) return;
+    this.x=e.global.x-this.dragOffset.x;
+    this.y=e.global.y-this.dragOffset.y;
   }
-
   private onDragEnd(): void {
     this.isDragging=false;
-    this.header.off('pointermove');
-    this.header.off('pointerup');
-    this.header.off('pointerupoutside');
+    this.header.off('pointermove', this.onDragMove, this);
+    this.header.off('pointerup', this.onDragEnd, this);
+    this.header.off('pointerupoutside', this.onDragEnd, this);
+  }
+  private scrollContent(deltaY: number): void {
+    const contentTotalHeight=this.contentContainer.height;
+    const visibleHeight=this.contentHeight;
+
+    if(contentTotalHeight<=visibleHeight) return;
+
+    const minScroll=-(contentTotalHeight-visibleHeight);
+    const maxScroll=0;
+
+    let newY=this.contentContainer.y-deltaY;
+
+    if(newY>maxScroll) {
+      newY=maxScroll;
+      this.scrollVelocity=0;
+    }
+
+    if(newY<minScroll) {
+      newY=minScroll;
+      this.scrollVelocity=0;
+    }
+
+    this.contentContainer.y=newY;
   }
 
+
   private setupScrolling(): void {
-    this.scrollArea.on('wheel', (event: any) => {
+    // DESKTOP
+    this.scrollArea.on('wheel', (event: WheelEvent) => {
+      if(isMobile()) return;
       event.preventDefault();
-      const scrollSpeed=1.0;
-      const scrollAmount=event.deltaY*scrollSpeed;
-      const contentTotalHeight=this.contentContainer.height;
-      const visibleHeight=this.contentHeight;
-      if(contentTotalHeight>visibleHeight) {
-        const newY=this.contentContainer.y-scrollAmount;
-        const minScroll=-(contentTotalHeight-visibleHeight);
-        const maxScroll=0;
-        this.contentContainer.y=Math.max(minScroll, Math.min(maxScroll, newY));
-      }
+      this.scrollContent(event.deltaY);
+    });
+    // MOBILE TOUCH SCROLL
+    this.scrollArea.eventMode='static';
+    this.scrollArea.cursor='default';
+    this.scrollArea.on('pointerdown', (e: PIXI.FederatedPointerEvent) => {
+      if(!isMobile()) return;
+
+      this.isScrolling=true;
+      this.scrollVelocity=0;
+      this.lastPointerY=e.global.y;
+    });
+
+    this.scrollArea.on('pointermove', (e: PIXI.FederatedPointerEvent) => {
+      if(!this.isScrolling||!isMobile()) return;
+
+      const delta=e.global.y-this.lastPointerY;
+      this.lastPointerY=e.global.y;
+
+      this.scrollVelocity=delta;      // store velocity
+      this.scrollContent(-delta);
+    });
+
+    this.scrollArea.on('pointerup', () => {
+      if(!isMobile()) return;
+      this.isScrolling=false;
+    });
+
+    this.scrollArea.on('pointerupoutside', () => {
+      if(!isMobile()) return;
+      this.isScrolling=false;
     });
   }
+
 
   addChild(...children: any[]): any {
     if(children[0]===this.background||
@@ -119,5 +164,21 @@ export class DialogWindow extends PIXI.Container {
       return super.addChild(...children);
     }
     return this.contentContainer.addChild(...children);
+  }
+
+  private updateInertia(): void {
+    if(this.isScrolling) return;
+    if(Math.abs(this.scrollVelocity)<this.minVelocity) {
+      this.scrollVelocity=0;
+      return;
+    }
+
+    this.scrollVelocity*=this.friction;
+    this.scrollContent(-this.scrollVelocity);
+  }
+
+  update() {
+    console.log('BLBLBLBL')
+    this.updateInertia()
   }
 }

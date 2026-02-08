@@ -15,7 +15,7 @@ async function start() {
   await app.init({
     width: innerWidth,
     height: innerHeight,
-    backgroundColor: 0x1e1e1e,
+    backgroundColor: 'black',
     antialias: true
   });
 

@@ -6,11 +6,11 @@ import { Avatar, Emoji, DialogLine, DialogSide } from "./interfaces";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { addFPS, createButton } from "../services/helpers-methods";
 import gsap from "gsap";
-import { DialogWindow } from "../components/dialogBox";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
 import { createGlowFilter } from "../shaders/base";
 import { magicWordsTextStyle } from "../resources/literails";
+import { DialogWindow } from "../components/DialogBox";
 
 export class MagicWords extends Scene {
   private link1: string="https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords";
@@ -19,7 +19,7 @@ export class MagicWords extends Scene {
   private emojiTextures=new Map<string, PIXI.Texture>();
   private dialogLines: DialogLine[]=[];
   private dialogAppearInterval: number=350;
-  private window: DialogWindow|null;
+  private winDialog: DialogWindow|null;
   // private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
   private testFilters: any[] = [];
   private addFPS: Function;
@@ -27,7 +27,7 @@ export class MagicWords extends Scene {
 
   constructor () {
     super();
-    this.window=null;
+    this.winDialog=null;
     getDataFromLink(this.link1).then((r: any) => {
       console.log(r.avatars)
       const avatarPromises=r.avatars.map((a: Avatar) =>
@@ -56,7 +56,7 @@ export class MagicWords extends Scene {
 
   private renderDialog() {
     let yPos=20;
-    this.window=new DialogWindow();
+    this.winDialog=new DialogWindow();
     const contentWidth=isMobile()? perToPixWidth(90):665;
 
     this.dialogLines.forEach((line, i) => {
@@ -66,7 +66,7 @@ export class MagicWords extends Scene {
       dialogBox.y=0;
       dialogBox.alpha=0;
       dialogBox.scale.set(0.95);
-      if(this.window) this.window.addChild(dialogBox);
+      if(this.winDialog) this.winDialog.addChild(dialogBox);
       const baseDelay=i*this.dialogAppearInterval/1000;
       gsap.to(dialogBox, {
         y: targetY,
@@ -91,7 +91,7 @@ export class MagicWords extends Scene {
         }
       });
     });
-    this.addChild(this.window);
+    this.addChild(this.winDialog);
   }
 
   private createDialogBox(line: DialogLine, stageWidth=800): PIXI.Container {
@@ -138,7 +138,7 @@ export class MagicWords extends Scene {
       // avatar.filters=[blurFilter];
       let myF=createGlowFilter();
       this.testFilters.push(myF)
-      // this.testFilter.resolution=window.devicePixelRatio;
+      // this.testFilter.resolution=winDialog.devicePixelRatio;
       avatar.filters=[myF];
       //
       // Circular mask - FIX: mask must be same size as avatar
@@ -169,7 +169,7 @@ export class MagicWords extends Scene {
         innerBubble.y=0;
       }
     } else {
-      // RIGHT SIDE - align to window edge
+      // RIGHT SIDE - align to winDialog edge
       const totalWidth=bubbleWidth+(avatar? avatarSize+gap:0);
       const startX=stageWidth-totalWidth;
 
@@ -286,6 +286,7 @@ export class MagicWords extends Scene {
   }
 
   update(deltaMS: number) {
+    this.winDialog?.update();
     if(this.testFilters) {
       this.testFilters.forEach((f) => {
         f.resources.timeUniforms.uniforms.uTime+=0.001*(deltaMS/16.67);

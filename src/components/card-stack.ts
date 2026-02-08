@@ -3,14 +3,13 @@ import { Card } from "./card";
 
 export class CardStack extends PIXI.Container {
   cards: Card[]=[];
-
   constructor () {
     super();
     this.sortableChildren=true;
   }
-
   push(card: Card) {
     const offsetY=this.cards.length*3;
+    // Probably it is possible to override origin position
     card.pos.setPosition(0, offsetY, 0);
     card.zIndex=this.cards.length;
     this.cards.push(card);
@@ -21,7 +20,6 @@ export class CardStack extends PIXI.Container {
     if(card) this.removeChild(card);
     return card;
   }
-
   top(): Card|undefined {
     return this.cards[this.cards.length-1];
   }

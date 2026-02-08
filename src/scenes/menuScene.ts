@@ -11,6 +11,7 @@ export class MenuScene extends Scene {
     super();
     this.addBtn("Ace of Shadows", AceOfShadowsScene);
     this.addBtn("Magic Words", MagicWords);
+    this.addBtn("Phoenix Flame", MagicWords);
   }
 
   addBtn(t: string, Class: new () => Scene) {

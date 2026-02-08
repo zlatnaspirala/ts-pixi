@@ -4,8 +4,8 @@ import * as PIXI from "pixi.js";
 
 /**
  * @description
- * I use absolute innerHeight for referent value for 
- *  diametric scale (Self adaptive on any resolutions).
+ * I use absolute innerHeight for referent value in 
+ * diametric scale (Self adaptive on any resolutions).
  */
 export class Card extends PIXI.Sprite {
   public pos;

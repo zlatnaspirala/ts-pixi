@@ -1,6 +1,9 @@
 
 ## PIXI-TS
 
+## Objective
+  Test PIXI power
+
 ### Project structure
 
 <pre>
@@ -39,8 +42,14 @@ npm run dev
 ```
 
 
+### About object/movement policy
 
-### Important notes
+- In aceOfShadowsScene Scene idont use gsap lib.
+  I create class Position (Similar functionality with gsap)
+- In Magic Words i use gsap.
+
+
+### Important notes about v8
 
 - In Pixi v8:
   Application is async

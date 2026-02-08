@@ -1,5 +1,4 @@
 import { EasingFn } from "./types";
-// import { TweenManager } from '../core/positionManager';
 
 const Easing: Record<string, EasingFn>={
   linear: t => t,
@@ -57,7 +56,6 @@ export class Position {
       onUpdate,
       onComplete
     }: any=options;
-    // TweenManager.instance.register(this);
     this._from={ x: this.x, y: this.y, z: this.z };
     this._to={ x, y, z };
     this._duration=Math.max(0.0001, duration)*1000;

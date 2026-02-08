@@ -41,7 +41,7 @@ export class AceOfShadowsScene extends Scene {
     this.fpsText=this.addFPS(this);
   }
 
-  update(deltaMS: number) {
+  update(_deltaMS: number) {
     const now=performance.now();
     if(this.stack1) for(const e of this.stack1.cards) {
       if(e.pos) {

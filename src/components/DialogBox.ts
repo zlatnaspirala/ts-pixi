@@ -1,6 +1,6 @@
+import * as PIXI from "pixi.js";
 import { isMobile } from "../utils/utils";
 import { windowTitleStyle } from "../resources/literails";
-import * as PIXI from "pixi.js";
 import { perToPixWidth } from "../core/position";
 
 export class DialogWindow extends PIXI.Container {
@@ -10,18 +10,16 @@ export class DialogWindow extends PIXI.Container {
   private scrollArea: PIXI.Container;
   private isDragging=false;
   private dragOffset={ x: 0, y: 0 };
-  // mobile
-  private isScrolling=false;
-  private lastPointerY=0;
-
-  private scrollVelocity=0;
-  private friction=0.95;     // 0.90–0.95 sweet spot
-  private minVelocity=0.1;
-
   private windowWidth=isMobile()? perToPixWidth(90):700;
   private windowHeight=window.innerHeight*0.8;
   private headerHeight=60;
   private contentHeight: number;
+  // mobile
+  private isScrolling=false;
+  private lastPointerY=0;
+  private scrollVelocity=0;
+  private friction=0.95;
+  private minVelocity=0.1;
 
   constructor () {
     super();
@@ -86,12 +84,14 @@ export class DialogWindow extends PIXI.Container {
     this.x=e.global.x-this.dragOffset.x;
     this.y=e.global.y-this.dragOffset.y;
   }
+
   private onDragEnd(): void {
     this.isDragging=false;
     this.header.off('pointermove', this.onDragMove, this);
     this.header.off('pointerup', this.onDragEnd, this);
     this.header.off('pointerupoutside', this.onDragEnd, this);
   }
+
   private scrollContent(deltaY: number): void {
     const contentTotalHeight=this.contentContainer.height;
     const visibleHeight=this.contentHeight;
@@ -116,46 +116,39 @@ export class DialogWindow extends PIXI.Container {
     this.contentContainer.y=newY;
   }
 
-
   private setupScrolling(): void {
-    // DESKTOP
+    // Desktop
     this.scrollArea.on('wheel', (event: WheelEvent) => {
       if(isMobile()) return;
       event.preventDefault();
       this.scrollContent(event.deltaY);
     });
-    // MOBILE TOUCH SCROLL
+    // Mobile
     this.scrollArea.eventMode='static';
     this.scrollArea.cursor='default';
     this.scrollArea.on('pointerdown', (e: PIXI.FederatedPointerEvent) => {
       if(!isMobile()) return;
-
       this.isScrolling=true;
       this.scrollVelocity=0;
       this.lastPointerY=e.global.y;
     });
-
     this.scrollArea.on('pointermove', (e: PIXI.FederatedPointerEvent) => {
       if(!this.isScrolling||!isMobile()) return;
-
       const delta=e.global.y-this.lastPointerY;
       this.lastPointerY=e.global.y;
-
-      this.scrollVelocity=delta;      // store velocity
+      // store velocity
+      this.scrollVelocity=delta;
       this.scrollContent(-delta);
     });
-
     this.scrollArea.on('pointerup', () => {
       if(!isMobile()) return;
       this.isScrolling=false;
     });
-
     this.scrollArea.on('pointerupoutside', () => {
       if(!isMobile()) return;
       this.isScrolling=false;
     });
   }
-
 
   addChild(...children: any[]): any {
     if(children[0]===this.background||
@@ -172,13 +165,12 @@ export class DialogWindow extends PIXI.Container {
       this.scrollVelocity=0;
       return;
     }
-
     this.scrollVelocity*=this.friction;
     this.scrollContent(-this.scrollVelocity);
   }
 
+  // Calling from Scene class
   update() {
-    console.log('BLBLBLBL')
     this.updateInertia()
   }
 }

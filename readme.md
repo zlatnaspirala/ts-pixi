@@ -32,13 +32,19 @@ pixi-ts-architecture/
 
 
 Install deps:
-```
+```js
 npm i
 ```
 
 Run dev:
-```
+```js
 npm run dev
+```
+
+Quick sanity check
+Run:
+```js
+npx typedoc --logLevel Verbose
 ```
 
 

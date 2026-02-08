@@ -9,30 +9,26 @@ import { onFirstInteraction } from "./utils/utils";
  * Prepare FullScreen on first user request/interactions.
  * Handle global events.
  */
-async function start() {
-  const app=new PIXI.Application();
+const app=new PIXI.Application();
 
-  await app.init({
-    width: innerWidth,
-    height: innerHeight,
-    backgroundColor: 'black',
-    antialias: true
-  });
+await app.init({
+  width: innerWidth,
+  height: innerHeight,
+  backgroundColor: 'black',
+  antialias: true
+});
 
-  document.body.appendChild(app.canvas);
+document.body.appendChild(app.canvas);
 
-  SceneManager.init(app);
-  SceneManager.change(new MenuScene());
+SceneManager.init(app);
+SceneManager.change(new MenuScene());
 
-  app.ticker.add((ticker) => {
-    SceneManager.update(ticker.deltaTime);
-  });
+app.ticker.add((ticker) => {
+  SceneManager.update(ticker.deltaTime);
+});
 
-  window.addEventListener('resize', () => {
-    app.renderer.resize(window.innerWidth, window.innerHeight);
-  });
+window.addEventListener('resize', () => {
+  app.renderer.resize(window.innerWidth, window.innerHeight);
+});
 
-  // window.addEventListener('pointerdown', onFirstInteraction);
-}
-
-start();
+window.addEventListener('pointerdown', onFirstInteraction);

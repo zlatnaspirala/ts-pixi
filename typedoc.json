@@ -1,0 +1,9 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "externalSymbolLinkMappings": {
+    "pixi.js": {
+      "*": "https://pixijs.download/dev/docs/"
+    }
+  }
+}

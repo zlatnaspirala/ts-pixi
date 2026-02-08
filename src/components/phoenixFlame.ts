@@ -1,17 +1,8 @@
 import * as PIXI from 'pixi.js';
-
-interface Particle {
-  sprite: PIXI.Sprite;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  scale: number;
-  rotation: number;
-}
+import { MyParticleSprite } from "../types/globalDefinitions";
 
 export class PhoenixFlame extends PIXI.Container {
-  private particles: Particle[]=[];
+  private particles: MyParticleSprite[]=[];
   private particleTexture: PIXI.Texture;
   private emitterX: number;
   private emitterY: number;
@@ -65,7 +56,7 @@ export class PhoenixFlame extends PIXI.Container {
       sprite.blendMode='add'; // Additive blending for glow
       this.addChild(sprite);
 
-      const particle: Particle={
+      const particle: MyParticleSprite={
         sprite,
         vx: 0,
         vy: 0,
@@ -80,7 +71,7 @@ export class PhoenixFlame extends PIXI.Container {
     }
   }
 
-  private resetParticle(particle: Particle): void {
+  private resetParticle(particle: MyParticleSprite): void {
     // Position at emitter
     particle.sprite.x=this.emitterX;
     particle.sprite.y=this.emitterY;
@@ -109,45 +100,37 @@ export class PhoenixFlame extends PIXI.Container {
   }
 
   update(deltaMS: number): void {
-    const deltaTime=deltaMS/1000; // Convert to seconds
-
+    // Convert to seconds
+    const deltaTime=deltaMS/1000; 
     // Spawn new particles
     this.spawnTimer+=deltaTime;
     while(this.spawnTimer>this.spawnRate) {
       this.spawnParticle();
       this.spawnTimer-=this.spawnRate;
     }
-
     // Update existing particles
     for(let i=this.particles.length-1; i>=0; i--) {
       const p=this.particles[i];
-
       // Update lifetime
       p.life-=deltaTime;
-
       if(p.life<=0) {
         // Particle died - reset it
         this.resetParticle(p);
         continue;
       }
-
       // Life ratio (1 = just born, 0 = about to die)
       const lifeRatio=p.life/p.maxLife;
-
       // Physics
       p.vy+=0.5*deltaTime; // Slight gravity
       p.sprite.x+=p.vx*deltaTime*60;
       p.sprite.y+=p.vy*deltaTime*60;
-
       // Rotation
       p.sprite.rotation+=0.02*deltaTime*60;
-
       // Scale - grow then shrink
       const scaleMultiplier=lifeRatio<0.3
         ? lifeRatio/0.3 // Fade out
         :Math.min(1, (1-lifeRatio)*3); // Grow in
       p.sprite.scale.set(p.scale*(0.5+scaleMultiplier*0.5));
-
       // Color shift: white -> yellow -> orange -> red -> dark
       if(lifeRatio>0.7) {
         // Young: white to yellow
@@ -162,7 +145,6 @@ export class PhoenixFlame extends PIXI.Container {
         // Dying: red to dark red
         p.sprite.tint=0xAA0000;
       }
-
       // Alpha fade out at end of life
       p.sprite.alpha=Math.min(1, lifeRatio*3);
     }

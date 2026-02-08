@@ -16,17 +16,12 @@ export class MenuScene extends Scene {
   }
 
   addBtn(t: string, Class: new () => Scene) {
-    const offSetY=this.children.length;
-    const bText=new PIXI.Text({
-      text: t,
-      style: mainMenuBtnStyle
-    }) as PIXI.Text;
+    const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle }) as PIXI.Text;
     bText.anchor.set(0.5);
-    console.log('TEST', bText)
     // Middle of screen - Avoid pixels absolute numbers -
     // in percentage we can make response scene for all devices 
     // with same code.
-    bText.position.set(perToPixWidth(50), perToPixHeight(30+offSetY*8));
+    bText.position.set(perToPixWidth(50), perToPixHeight(30+this.children.length*8));
     bText.interactive=true;
     bText.cursor="pointer";
     bText.on("pointerdown", () => {

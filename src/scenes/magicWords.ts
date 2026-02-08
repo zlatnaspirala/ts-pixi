@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { getDataFromLink, isMobile } from "../utils/utils";
 import { Scene } from "../core/scene";
 import { loadUrlTexture } from "../resources/textures";
-import { Avatar, Emoji, DialogLine, DialogSide } from "./interfaces";
+import { Avatar, Emoji, DialogLine  } from "../types/appDefinitions";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { addFPS, createButton } from "../services/helpers-methods";
 import gsap from "gsap";
@@ -10,7 +10,7 @@ import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
 import { createGlowFilter } from "../shaders/base";
 import { magicWordsTextStyle } from "../resources/literails";
-import { DialogWindow } from "../components/DialogBox";
+import { DialogWindow } from "../components/dialogBox";
 
 export class MagicWords extends Scene {
   private link1: string="https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords";

@@ -7,8 +7,8 @@ import { SceneManager } from "../core/sceneManager";
 
 interface FlameSprite {
   sprite: PIXI.AnimatedSprite;
-  baseX: number; // Store relative X
-  baseY: number; // Store relative Y
+  baseX: number;
+  baseY: number;
   waveSpeed: number;
   waveAmount: number;
   scaleBase: number;
@@ -26,7 +26,6 @@ export class PhoenixFlameScene extends Scene {
 
     this.phoenixContainer=new PIXI.Container();
     this.addChild(this.phoenixContainer);
-
     let btnBack=createButton("Back to menu", () => {
       SceneManager.change(new MenuScene());
     });
@@ -51,34 +50,28 @@ export class PhoenixFlameScene extends Scene {
     const centerX=window.innerWidth/2;
     const centerY=window.innerHeight*0.5;
     const positions=[
-      // HEAD & NECK
-      { x: 0, y: -150, scale: 1.8, alpha: 1, rot: 0 },    // Head
+      // HEAD
+      { x: 0, y: -150, scale: 1.8, alpha: 1, rot: 0 },
       // MAIN BODY
-      { x: 10, y: -85, scale: -3.1, alpha: 1, rot: 0 },    // Core Chest
-      // LEFT WING (Arching up and out)
+      { x: 10, y: -85, scale: -3.1, alpha: 1, rot: 0 },
+      // LEFT WING
       { x: -60, y: -80, scale: 2.0, alpha: 0.9, rot: -0.4 },
       { x: -130, y: -110, scale: 2.9, alpha: 0.8, rot: -0.9 },
-      { x: -100, y: 10, scale: 1.7, alpha: 0.8, rot: -0.2 }, // Lower wing part
-
+      // Lower wing part
+      { x: -100, y: 10, scale: 1.7, alpha: 0.8, rot: -0.2 },
       // RIGHT WING (Mirror)
       { x: 60, y: -70, scale: 2.0, alpha: 0.9, rot: 0.4 },
       { x: 130, y: -110, scale: 2.9, alpha: 0.8, rot: 0.9 },
       { x: 100, y: 10, scale: 1.7, alpha: 0.8, rot: 0.2 },
-
       // TAIL (Flowing down)
-      { x: -40, y: 160, scale: 1.8, alpha: 0.7, rot: 0.2 }, // Tail left feather
-      { x: 40, y: 160, scale: 1.8, alpha: 0.7, rot: -0.2 }, // Tail right feather
-      { x: 0, y: 220, scale: 1.5, alpha: 0.6, rot: 0 },   // Tail tip
+      { x: -40, y: 160, scale: 1.8, alpha: 0.7, rot: 0.2 },
+      { x: 40, y: 160, scale: 1.8, alpha: 0.7, rot: -0.2 },
+      { x: 0, y: 220, scale: 1.5, alpha: 0.6, rot: 0 }
     ];
 
     positions.forEach((pos, index) => {
-      let flame;
-      if(index==1) {
-        flame=new PIXI.AnimatedSprite(framesBody);
-      } else {
-        flame=new PIXI.AnimatedSprite(frames);
-      }
-      flame.anchor.set(0.5, 0.8); // Set anchor to bottom of flame
+      let flame=new PIXI.AnimatedSprite(index==1? framesBody:frames);
+      flame.anchor.set(0.5, 0.8);
       flame.x=centerX+pos.x;
       flame.y=centerY+pos.y;
       flame.scale.set(pos.scale);
@@ -86,15 +79,11 @@ export class PhoenixFlameScene extends Scene {
       flame.alpha=pos.alpha;
       flame.animationSpeed=0.3+Math.random()*0.3;
       flame.blendMode='add';
-
-      const blurFilter=new PIXI.BlurFilter();
-      blurFilter.blur=1.1;
-      flame.filters=[blurFilter];
-
+      // const blurFilter=new PIXI.BlurFilter();
+      // blurFilter.blur=1.1;
+      // flame.filters=[blurFilter];
       flame.play();
-
       this.phoenixContainer.addChild(flame);
-
       this.flames.push({
         sprite: flame,
         baseX: centerX+pos.x,
@@ -115,19 +104,15 @@ export class PhoenixFlameScene extends Scene {
 
     this.flames.forEach((flameData, index) => {
       const sprite=flameData.sprite;
-
       // Horizontal swaying (Wind effect)
       const waveX=Math.sin(this.elapsedTime*2+index)*(flameData.waveAmount);
       sprite.x=flameData.baseX+waveX;
-
       // Vertical "Breathing" / Bobbing
       const bobY=Math.cos(this.elapsedTime*1.5+index)*5;
       sprite.y=flameData.baseY+bobY;
-
       // Pulse the scale slightly to make the fire feel alive
       const pulse=Math.sin(this.elapsedTime*3+index)*0.05;
       sprite.scale.set(flameData.scaleBase+pulse);
-
       // Flickering Alpha
       sprite.alpha=0.7+Math.random()*0.3;
     });

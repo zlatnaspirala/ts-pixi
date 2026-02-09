@@ -33,7 +33,7 @@ app.init({
     SceneManager.onResize();
   });
 
-  window.addEventListener('pointerdown', onFirstInteraction);
+  window.addEventListener('click', onFirstInteraction);
   console.log(`%c🚀 Script started with success!`, LOG_FUNNY);
 
 }).catch((err) => {

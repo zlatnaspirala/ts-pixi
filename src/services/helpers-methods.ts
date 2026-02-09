@@ -11,7 +11,7 @@ export function createButton(label: string, onClick: () => void): PIXI.Text {
   const btn=new PIXI.Text({
     text: label,
     style: {
-      fontSize: 14,
+      fontSize: 20,
       fill: 0xffffff
     }
   });

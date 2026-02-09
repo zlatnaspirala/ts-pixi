@@ -6,7 +6,7 @@
 
 let fullscreenEnabled=false;
 export function enableFullscreen() {
-  if(fullscreenEnabled) return;
+  if(fullscreenEnabled === true) return;
   const elem=document.documentElement;
   if(elem.requestFullscreen) {
     elem.requestFullscreen();
@@ -20,7 +20,7 @@ export function enableFullscreen() {
 
 export function onFirstInteraction() {
   enableFullscreen();
-  window.removeEventListener('pointerdown', onFirstInteraction);
+  window.removeEventListener('click', onFirstInteraction);
 }
 
 /**

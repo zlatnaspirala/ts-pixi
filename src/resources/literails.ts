@@ -8,7 +8,7 @@ import * as PIXI from "pixi.js";
  */
 export const mainMenuBtnStyle: PIXI.TextStyleOptions={
   fill: 0xffffff,
-  fontSize: isMobile()? 26:36,
+  fontSize: isMobile()? 30:36,
   align: "center"
 }
 

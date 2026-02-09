@@ -78,7 +78,7 @@ npx typedoc --logLevel Verbose
 
 ### About object/movement policy
 
-- In aceOfShadowsScene Scene iam not use gsap lib.
+- In aceOfShadowsScene Scene gsap lib is't used.
   I create class Position (Similar functionality with gsap)
 - In Magic Words i use gsap.
 

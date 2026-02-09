@@ -55,4 +55,4 @@ export function getOrientation(): "landscape" | "portrait" {
   return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
 }
 
-export const LOG_FUNNY = "font-family: stormfaze;color: #f1f033; font-size:10px;text-shadow: 2px 2px 4px #f335f4, 4px 4px 4px #d64444, 1px 1px 2px #c160a6, 3px 1px 0px #123de3;background: black;";
+export const LOG_FUNNY = "font-family: stormfaze;color: #f1f033; font-size:18px;text-shadow: 2px 2px 4px #f335f4, 4px 4px 4px #d64444, 1px 1px 2px #c160a6, 3px 1px 0px #123de3;background: black;";

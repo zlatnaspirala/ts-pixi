@@ -17,7 +17,7 @@ app.init({
   height: innerHeight,
   backgroundColor: 'black',
   antialias: true
-}).then((t) => {
+}).then(() => {
 
   document.body.appendChild(app.canvas);
 
@@ -36,5 +36,5 @@ app.init({
   console.log(`%c🚀 Script started with success!`, LOG_FUNNY);
 
 }).catch((err) => {
-  console.log("App error: "+err);
+  console.log(`%cApp error: ${err}`, LOG_FUNNY);
 });

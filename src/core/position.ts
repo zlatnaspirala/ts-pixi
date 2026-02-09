@@ -1,4 +1,4 @@
-import { EasingFn } from "./types";
+import { EasingFn } from "../types/appDefinitions";
 
 const Easing: Record<string, EasingFn>={
   linear: t => t,

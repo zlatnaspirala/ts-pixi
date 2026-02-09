@@ -80,7 +80,7 @@ npx typedoc --logLevel Verbose
 
 - In aceOfShadowsScene Scene gsap lib is't used.
   I create class Position (Similar functionality with gsap)
-- In MagicWords i use gsap.
+- In MagicWords i use gsap. DialogPopup is draggable also on mobile devices.
 - In PhoenixFlame scene i use `onResize` and make Phoenix always
   fit in middle of screen.
 

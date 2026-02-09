@@ -88,7 +88,7 @@ export class AceOfShadowsScene extends Scene {
       this.stack2.cards.push(card);
       const localPos=this.stack2.toLocal(worldPos);
       card.pos.setPosition(localPos.x, localPos.y);
-      const targetY=(this.stack2.cards.length-1)*4;
+      const targetY=(this.stack2.cards.length-1)*this.stack1.YOffset;
       card.pos.to({
         x: 0,
         y: targetY,

@@ -13,7 +13,7 @@ export class CardStack extends PIXI.Container {
   private YOffset: number=3;
   constructor () {
     super();
-    this.YOffset=(isMobile()? getOrientation()==="landscape"? 1:2:3);
+    this.YOffset=(isMobile()? getOrientation()==="landscape"? 2:2:3);
     this.sortableChildren=true;
   }
   push(card: Card) {

@@ -2,7 +2,7 @@ import './libs/hacker-timer.js';
 import * as PIXI from "pixi.js";
 import { SceneManager } from "./core/sceneManager";
 import { MenuScene } from "./scenes/menuScene";
-import { LOG_FUNNY, onFirstInteraction } from "./utils/utils";
+import { isMobile, LOG_FUNNY, onFirstInteraction } from "./utils/utils";
 
 /**
  * @description
@@ -18,7 +18,6 @@ app.init({
   backgroundColor: 'black',
   antialias: true
 }).then(() => {
-
   document.body.appendChild(app.canvas);
 
   SceneManager.init(app);
@@ -33,7 +32,10 @@ app.init({
     SceneManager.onResize();
   });
 
-  window.addEventListener('click', onFirstInteraction);
+  localStorage.removeItem('first-touch');
+
+  isMobile()? window.addEventListener('touchend', onFirstInteraction):
+    window.addEventListener('click', onFirstInteraction);
   console.log(`%c🚀 Script started with success!`, LOG_FUNNY);
 
 }).catch((err) => {

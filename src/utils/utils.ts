@@ -4,9 +4,11 @@
  * No PIXI context here.
  */
 
+import { FORCE_FULL_SCREEN } from "../appConfig";
+
 let fullscreenEnabled=false;
 export function enableFullscreen() {
-  if(fullscreenEnabled === true) return;
+  if(fullscreenEnabled===true) return;
   const elem=document.documentElement;
   if(elem.requestFullscreen) {
     elem.requestFullscreen();
@@ -15,12 +17,13 @@ export function enableFullscreen() {
   } else if((elem as any).msRequestFullscreen) {
     (elem as any).msRequestFullscreen();
   }
-  fullscreenEnabled=true;
+  // fullscreenEnabled=true;
 }
 
 export function onFirstInteraction() {
   enableFullscreen();
-  window.removeEventListener('click', onFirstInteraction);
+  if (FORCE_FULL_SCREEN === false) isMobile()? window.removeEventListener('touchend', onFirstInteraction):
+    window.removeEventListener('click', onFirstInteraction);
 }
 
 /**
@@ -51,8 +54,8 @@ export function isMobile(): boolean {
   return isTouch||isMobileUA;
 }
 
-export function getOrientation(): "landscape" | "portrait" {
-  return window.innerWidth > window.innerHeight ? "landscape" : "portrait";
+export function getOrientation(): "landscape"|"portrait" {
+  return window.innerWidth>window.innerHeight? "landscape":"portrait";
 }
 
-export const LOG_FUNNY = "font-family: stormfaze;color: #f1f033; font-size:18px;text-shadow: 2px 2px 4px #f335f4, 4px 4px 4px #d64444, 1px 1px 2px #c160a6, 3px 1px 0px #123de3;background: black;";
+export const LOG_FUNNY="font-family: stormfaze;color: #f1f033; font-size:18px;text-shadow: 2px 2px 4px #f335f4, 4px 4px 4px #d64444, 1px 1px 2px #c160a6, 3px 1px 0px #123de3;background: black;";

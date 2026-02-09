@@ -4,6 +4,7 @@ import { addFPS, createButton, genFramesFromTex } from "../services/helpers-meth
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
+import { isMobile } from "../utils/utils";
 // import { PhoenixFlameGraphics } from "../components/phoenixFlame";
 
 interface FlameSprite {
@@ -56,25 +57,8 @@ export class PhoenixFlameScene extends Scene {
     framesBody.push(...genFramesFromTex(3, 3, textureBody));
     const centerX=window.innerWidth/2;
     const centerY=window.innerHeight*0.5;
-    this.positions=[
-      // HEAD
-      { x: 0, y: -150, scale: 1.8, alpha: 1, rot: 0 },
-      // MAIN BODY
-      { x: 10, y: -85, scale: -3.1, alpha: 1, rot: 0 },
-      // LEFT WING
-      { x: -60, y: -80, scale: 2.0, alpha: 0.9, rot: -0.4 },
-      { x: -130, y: -110, scale: 2.9, alpha: 0.8, rot: -0.9 },
-      // Lower wing part
-      // { x: -100, y: 10, scale: 1.7, alpha: 0.8, rot: -0.2 },
-      // RIGHT WING (Mirror)
-      { x: 60, y: -70, scale: 2.0, alpha: 0.9, rot: 0.4 },
-      { x: 130, y: -110, scale: 2.9, alpha: 0.8, rot: 0.9 },
-      // { x: 100, y: 10, scale: 1.7, alpha: 0.8, rot: 0.2 },
-      // TAIL (Flowing down)
-      { x: -40, y: 160, scale: 1.8, alpha: 0.7, rot: 0.2 },
-      { x: 40, y: 160, scale: 1.8, alpha: 0.7, rot: -0.2 },
-      { x: 0, y: 220, scale: 1.5, alpha: 0.6, rot: 0 }
-    ];
+
+    this.positions=this.getShemaPos();
 
     this.positions.forEach((pos, index) => {
       let flame=new PIXI.AnimatedSprite(index==1? framesBody:frames);
@@ -100,6 +84,30 @@ export class PhoenixFlameScene extends Scene {
         scaleBase: pos.scale
       });
     });
+  }
+
+  getShemaPos() {
+    let scaleMobileFactor=1;
+    if(isMobile()==true) {
+      scaleMobileFactor=0.5;
+    }
+    return this.positions=[
+      // HEAD
+      { x: 0*scaleMobileFactor, y: -150*scaleMobileFactor, scale: 1.8*scaleMobileFactor, alpha: 1, rot: 0 },
+      // MAIN BODY
+      { x: 10*scaleMobileFactor, y: -85*scaleMobileFactor, scale: -3.1*scaleMobileFactor, alpha: 1, rot: 0 },
+      // LEFT WING
+      { x: -60*scaleMobileFactor, y: -80*scaleMobileFactor, scale: 2.0*scaleMobileFactor, alpha: 0.9, rot: -0.4 },
+      { x: -130*scaleMobileFactor, y: -110*scaleMobileFactor, scale: 2.9*scaleMobileFactor, alpha: 0.8, rot: -0.9 },
+      // Lower wing part
+      // RIGHT WING (Mirror)
+      { x: 60*scaleMobileFactor, y: -70*scaleMobileFactor, scale: 2.0*scaleMobileFactor, alpha: 0.9, rot: 0.4 },
+      { x: 130*scaleMobileFactor, y: -110*scaleMobileFactor, scale: 2.9*scaleMobileFactor, alpha: 0.8, rot: 0.9 },
+      // TAIL (Flowing down)
+      { x: -40*scaleMobileFactor, y: 160*scaleMobileFactor, scale: 1.8*scaleMobileFactor, alpha: 0.7, rot: 0.2 },
+      { x: 40*scaleMobileFactor, y: 160*scaleMobileFactor, scale: 1.8*scaleMobileFactor, alpha: 0.7, rot: -0.2 },
+      { x: 0*scaleMobileFactor, y: 220*scaleMobileFactor, scale: 1.5*scaleMobileFactor, alpha: 0.6, rot: 0 }
+    ];
   }
 
   update(deltaMS: number) {

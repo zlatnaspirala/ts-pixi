@@ -23,6 +23,7 @@ export class MagicWords extends Scene {
   private testFilters: any[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private lastOrientation: string|null=null;
 
   constructor () {
     super();
@@ -30,22 +31,23 @@ export class MagicWords extends Scene {
 
     loadTexture('./assets/textures/default.png').then((tex) => {
       this.avatarTextures.set('default', tex);
-    });
 
-    getDataFromLink(this.link1).then((r: any) => {
-      // console.log(r.avatars)
-      const avatarPromises=r.avatars.map((a: Avatar) =>
-        loadUrlTexture(a.url).then((tex) => {
-          this.avatarTextures.set(a.name, tex);
-          this.avatars.set(a.name, a);
-        })
-      );
-      const emojiPromises=r.emojies.map((emoji: Emoji) =>
-        loadUrlTexture(emoji.url).then((tex) => { this.emojiTextures.set(emoji.name, tex) })
-      );
-      Promise.all([...avatarPromises, ...emojiPromises]).then(() => {
-        this.dialogLines=r.dialogue;
-        this.renderDialog();
+
+      getDataFromLink(this.link1).then((r: any) => {
+        // console.log(r.avatars)
+        const avatarPromises=r.avatars.map((a: Avatar) =>
+          loadUrlTexture(a.url).then((tex) => {
+            this.avatarTextures.set(a.name, tex);
+            this.avatars.set(a.name, a);
+          })
+        );
+        const emojiPromises=r.emojies.map((emoji: Emoji) =>
+          loadUrlTexture(emoji.url).then((tex) => { this.emojiTextures.set(emoji.name, tex) })
+        );
+        Promise.all([...avatarPromises, ...emojiPromises]).then(() => {
+          this.dialogLines=r.dialogue;
+          this.renderDialog();
+        });
       });
     });
     let btnBack=createButton("Back to menu", () => {
@@ -56,6 +58,11 @@ export class MagicWords extends Scene {
     this.addChild(btnBack);
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
+
+    this.lastOrientation=isMobile()? window.innerWidth>window.innerHeight? "landscape":"portrait":"desktop";
+    this.onResize();
+    // mobile browsers sometimes lag
+    setTimeout(() => this.onResize(), 100);
   }
 
   private renderDialog() {
@@ -311,6 +318,17 @@ export class MagicWords extends Scene {
     return container;
   }
 
+  private rebuildDialog() {
+    if(this.winDialog) {
+      // keeps textures alive
+      this.winDialog?.removeChildren();
+      this.removeChild(this.winDialog);
+      this.winDialog=null;
+    }
+
+    this.renderDialog();
+  }
+
   update(deltaMS: number) {
     this.winDialog?.update();
     if(this.testFilters) {
@@ -323,5 +341,20 @@ export class MagicWords extends Scene {
   }
 
   destroyScene() {}
-  onResize() {}
+
+  onResize() {
+    if(!this.winDialog) return;
+
+    const currentOrientation=
+      isMobile()
+        ? window.innerWidth>window.innerHeight? "landscape":"portrait"
+        :"desktop";
+
+    if(this.lastOrientation===currentOrientation) return;
+
+    this.lastOrientation=currentOrientation;
+
+    // 🔥 Rebuild dialog layout
+    this.rebuildDialog();
+  }
 }

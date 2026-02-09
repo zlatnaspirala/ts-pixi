@@ -53,7 +53,7 @@ export class MagicWords extends Scene {
     let btnBack=createButton("Back to menu", () => {
       SceneManager.change(new MenuScene());
     });
-    btnBack.position.y=perToPixHeight(5);
+    btnBack.position.y=perToPixHeight(1);
     btnBack.position.x=perToPixWidth(5);
     this.addChild(btnBack);
     this.addFPS=addFPS.bind(this);

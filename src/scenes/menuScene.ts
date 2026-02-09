@@ -10,13 +10,17 @@ import { addFPS } from "../services/helpers-methods";
 import { getOrientation, isMobile } from "../utils/utils";
 import { DialogWindow } from "../components/dialogBox";
 import gsap from "gsap";
+import { PhoenixFlameGraphics } from "../components/phoenixFlame";
 
 export class MenuScene extends Scene {
   private buttons: PIXI.Container[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private fpsTitle: PIXI.Text|undefined;
   private welcomeDialog: DialogWindow|undefined;
   private welcomeText: PIXI.Text|undefined;
+  private graphicsDraws: PhoenixFlameGraphics;
+  private graphicsDrawsTop: PhoenixFlameGraphics;
 
   constructor () {
     super();
@@ -41,8 +45,15 @@ export class MenuScene extends Scene {
       this.addChild(this.welcomeDialog);
     }
 
+    // arg are percents
+    this.graphicsDraws = new PhoenixFlameGraphics(50, 80, "star");
+    this.addChild(this.graphicsDraws);
+    this.graphicsDrawsTop = new PhoenixFlameGraphics(50, 10, "base", -1);
+    this.addChild(this.graphicsDrawsTop);
+
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
+    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
   }
 
   addBtn(t: string, Class: new () => Scene) {
@@ -50,14 +61,14 @@ export class MenuScene extends Scene {
 
     const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle });
     bText.anchor.set(0.5);
-    const fixedWidth=isMobile()? perToPixWidth(40):300;
-    const fixedHeight=isMobile()? 40:60;
+    const fixedWidth=isMobile()? getOrientation()==="portrait"? perToPixWidth(60):perToPixWidth(35):300;
+    const fixedHeight=isMobile()? 43:63;
     const background=new PIXI.Graphics();
     // Path -> Fill -> Stroke
     background
       .roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
       .fill({ color: 0x000000, alpha: 0.6 })
-      .stroke({ width: 4, color: 0x3498db, alpha: 1 });
+      .stroke({ width: 2, color: 0x3498db, alpha: 1 });
 
     container.addChild(background);
     container.addChild(bText);
@@ -90,6 +101,8 @@ export class MenuScene extends Scene {
   }
 
   update(_: number) {
+    if (this.graphicsDraws) this.graphicsDraws.update(_);
+    if (this.graphicsDrawsTop) this.graphicsDrawsTop.update(_);
     if(this.app&&this.fpsText) this.fpsText.text=`${Math.round(this.app.ticker.FPS)}`;
   }
 
@@ -102,5 +115,13 @@ export class MenuScene extends Scene {
       this.welcomeText.position.x=this.welcomeDialog.width/2;
       this.welcomeText.position.y=this.welcomeDialog.height/4;
     }
+
+    if(this.fpsText&&this.fpsTitle) {
+      this.fpsTitle.x=perToPixWidth(93);
+      this.fpsTitle.y=1;
+      this.fpsText.x=perToPixWidth(93)+30;
+      this.fpsText.y=1;
+    }
+
   }
 }

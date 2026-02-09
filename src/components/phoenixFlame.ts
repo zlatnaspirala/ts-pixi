@@ -1,44 +1,83 @@
 import * as PIXI from 'pixi.js';
 import { MyParticleSprite } from "../types/globalDefinitions";
+import { perToPixHeight, perToPixWidth } from '../core/position';
+import { createStarTexture } from '../services/shapes';
 
 export class PhoenixFlameGraphics extends PIXI.Container {
   private particles: MyParticleSprite[]=[];
   private particleTexture: PIXI.Texture;
   private emitterX: number;
   private emitterY: number;
-  private maxParticles=10;
+  private initX: number;
+  private initY: number;
+  private maxParticles=15;
   private spawnTimer=0;
-  private spawnRate=0.05; // Spawn every 50ms
+  private spawnRate=0.05;
+  private dirX:number = 1;
 
-  constructor (x: number, y: number) {
+  private createStarTexture: () => PIXI.Texture;
+
+  constructor (x: number, y: number, type ="star", dirX = 1) {
     super();
+    this.initX=x;
+    this.initY=y;
     this.emitterX=x;
     this.emitterY=y;
-    // Create particle texture (glowing circle)
-    this.particleTexture=this.createParticleTexture();
+    this.dirX = dirX;
+
+    this.createStarTexture = createStarTexture.bind(this);
+    if (type == "star") this.particleTexture=this.createStarTexture();
+    if (type == "base") this.particleTexture=this.createParticleTexture();
   }
 
   private createParticleTexture(): PIXI.Texture {
-    const size=64;
+    const size=128;
     const canvas=document.createElement('canvas');
     canvas.width=size;
     canvas.height=size;
     const ctx=canvas.getContext('2d')!;
+    const center=size/2;
 
-    // Create radial gradient
-    const gradient=ctx.createRadialGradient(
-      size/2, size/2, 0,
-      size/2, size/2, size/2
-    );
+    // 1. Clean background
+    ctx.clearRect(0, 0, size, size);
 
-    gradient.addColorStop(0, 'rgba(255, 255, 200, 1)'); // White hot center
-    gradient.addColorStop(0.3, 'rgba(255, 180, 0, 0.9)'); // Yellow
-    gradient.addColorStop(0.6, 'rgba(255, 80, 0, 0.6)'); // Orange
-    gradient.addColorStop(0.8, 'rgba(200, 0, 0, 0.3)'); // Red
-    gradient.addColorStop(1, 'rgba(100, 0, 0, 0)'); // Transparent
+    // 2. Create a sharp horizontal "flare" (anamorphic look)
+    const flareGrd=ctx.createRadialGradient(center, center, 0, center, center, size/2);
+    flareGrd.addColorStop(0, 'rgba(255, 255, 255, 1)'); // White core
+    flareGrd.addColorStop(0.1, 'rgba(0, 200, 255, 0.8)'); // Cyan/Electric Blue
+    flareGrd.addColorStop(0.4, 'rgba(0, 50, 255, 0.2)'); // Deep Blue wash
+    flareGrd.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade
 
-    ctx.fillStyle=gradient;
-    ctx.fillRect(0, 0, size, size);
+    // Draw a stretched ellipse for the "tech" flare look
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.scale(1.5, 0.2); // Stretch horizontally, squash vertically
+    ctx.fillStyle=flareGrd;
+    ctx.beginPath();
+    ctx.arc(0, 0, size/2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    // 3. Create a vertical "glitch" spike
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.scale(0.1, 1.2); // Thin vertical spike
+    ctx.fillStyle='rgba(200, 230, 255, 0.5)';
+    ctx.beginPath();
+    ctx.arc(0, 0, size/2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Central Core Glow
+    const coreGrd=ctx.createRadialGradient(center, center, 0, center, center, size/4);
+    coreGrd.addColorStop(0, '#ffffff');
+    coreGrd.addColorStop(0.5, 'rgba(100, 255, 255, 0.5)');
+    coreGrd.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+    ctx.fillStyle=coreGrd;
+    ctx.beginPath();
+    ctx.arc(center, center, size/4, 0, Math.PI*2);
+    ctx.fill();
 
     return PIXI.Texture.from(canvas);
   }
@@ -101,7 +140,7 @@ export class PhoenixFlameGraphics extends PIXI.Container {
 
   update(deltaMS: number): void {
     // Convert to seconds
-    const deltaTime=deltaMS/1000; 
+    const deltaTime=deltaMS/1000;
     // Spawn new particles
     this.spawnTimer+=deltaTime;
     while(this.spawnTimer>this.spawnRate) {
@@ -123,7 +162,7 @@ export class PhoenixFlameGraphics extends PIXI.Container {
       // Physics
       p.vy+=0.5*deltaTime; // Slight gravity
       p.sprite.x+=p.vx*deltaTime*60;
-      p.sprite.y+=p.vy*deltaTime*60;
+      p.sprite.y+=p.vy*deltaTime*60*this.dirX;
       // Rotation
       p.sprite.rotation+=0.02*deltaTime*60;
       // Scale - grow then shrink
@@ -148,6 +187,8 @@ export class PhoenixFlameGraphics extends PIXI.Container {
       // Alpha fade out at end of life
       p.sprite.alpha=Math.min(1, lifeRatio*3);
     }
+
+    this.setEmitterPosition(perToPixWidth(this.initX), perToPixHeight(this.initY))
   }
 
   // Change emitter position (for moving phoenix)

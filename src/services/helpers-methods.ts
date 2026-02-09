@@ -1,3 +1,4 @@
+import { perToPixWidth } from "../core/position";
 import * as PIXI from "pixi.js";
 
 /**
@@ -35,13 +36,14 @@ export function addFPS(parent: PIXI.Container) {
     stroke: { color: '#000000', width: 4 },
     fontWeight: 'bold'
   });
-  const fpsTextTitle=new PIXI.Text({ text: 'FPS:', style: fpsStyle });
+  const fpsTitle=new PIXI.Text({ text: 'FPS:', style: fpsStyle });
+  fpsTitle.label = "fpsTitle";
   const fpsText=new PIXI.Text({ text: '', style: fpsStyle });
-  fpsTextTitle.x=5;
-  fpsTextTitle.y=5;
-  fpsText.x=30;
-  fpsText.y=5;
-  parent.addChild(fpsTextTitle);
+  fpsTitle.x=perToPixWidth(94);
+  fpsTitle.y=1;
+  fpsText.x=perToPixWidth(94) + 30;
+  fpsText.y=1;
+  parent.addChild(fpsTitle);
   parent.addChild(fpsText);
   return fpsText;
 }

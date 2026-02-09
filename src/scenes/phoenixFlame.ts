@@ -23,8 +23,6 @@ export class PhoenixFlameScene extends Scene {
   private elapsedTime=0;
   private phoenixContainer: PIXI.Container;
   private positions: any[]=[];
-  // bonus
-  // private graphicsDraws:PhoenixFlameGraphics;
 
   constructor () {
     super();
@@ -34,16 +32,13 @@ export class PhoenixFlameScene extends Scene {
     let btnBack=createButton("Back to menu", () => {
       SceneManager.change(new MenuScene());
     });
-    btnBack.position.y=perToPixHeight(5);
+    btnBack.position.y=perToPixHeight(1);
     btnBack.position.x=perToPixWidth(5);
     this.addChild(btnBack);
 
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
     this.createFlame();
-
-    // this.graphicsDraws = new PhoenixFlameGraphics(perToPixWidth(50), perToPixHeight(50));
-    // this.addChild(this.graphicsDraws);
   }
 
   async createFlame() {
@@ -128,11 +123,8 @@ export class PhoenixFlameScene extends Scene {
       // Pulse the scale slightly to make the fire feel alive
       const pulse=Math.sin(this.elapsedTime*3+index)*0.05;
       sprite.scale.set(flameData.scaleBase+pulse);
-      // Flickering Alpha
       sprite.alpha=0.7+Math.random()*0.3;
     });
-
-    // if (this.graphicsDraws) this.graphicsDraws.update(deltaMS);
   }
 
   onResize() {

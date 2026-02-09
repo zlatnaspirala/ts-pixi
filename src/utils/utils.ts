@@ -22,7 +22,7 @@ export function enableFullscreen() {
 
 export function onFirstInteraction() {
   enableFullscreen();
-  if (FORCE_FULL_SCREEN === false) isMobile()? window.removeEventListener('touchend', onFirstInteraction):
+  if(FORCE_FULL_SCREEN===false) isMobile()? window.removeEventListener('touchend', onFirstInteraction):
     window.removeEventListener('click', onFirstInteraction);
 }
 
@@ -56,6 +56,34 @@ export function isMobile(): boolean {
 
 export function getOrientation(): "landscape"|"portrait" {
   return window.innerWidth>window.innerHeight? "landscape":"portrait";
+}
+
+export async function lockLandscape() {
+  try {
+    await document.documentElement.requestFullscreen();
+    if(screen.orientation&&(screen.orientation as any).lock) {
+      await (screen.orientation as any).lock('landscape');
+      console.log("Orientation locked to landscape!");
+    }
+  } catch(err) {
+    console.error("Lock failed:", err);
+  }
+}
+
+export async function lockPortrait() {
+  try {
+    await document.documentElement.requestFullscreen();
+    if(screen.orientation&&(screen.orientation as any).lock) {
+      await (screen.orientation as any).lock('portrait');
+      console.log("Orientation locked to portrait!");
+    }
+  } catch(err) {
+    console.error("Lock failed:", err);
+  }
+}
+
+export async function unlockOrientation() {
+  screen.orientation.unlock();
 }
 
 export const LOG_FUNNY="font-family: stormfaze;color: #f1f033; font-size:18px;text-shadow: 2px 2px 4px #f335f4, 4px 4px 4px #d64444, 1px 1px 2px #c160a6, 3px 1px 0px #123de3;background: black;";

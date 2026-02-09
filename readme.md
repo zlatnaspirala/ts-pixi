@@ -1,12 +1,12 @@
 ## PIXI-TS
 ### Version 1.0
 
-Public demo: 
+ - [Public demo](https://maximumroulette.com/apps/ts-pixi/)
+ - [API Docs](https://maximumroulette.com/apps/ts-pixi/)
+
 
 ## Objective
-
   - Test PIXI power.
-
 
 ### Project structure
 
@@ -80,7 +80,7 @@ npx typedoc --logLevel Verbose
 
 - In aceOfShadowsScene Scene gsap lib is't used.
   I create class Position (Similar functionality with gsap)
-- In Magic Words i use gsap.
+- In MagicWords i use gsap.
 - In PhoenixFlame scene i use `onResize` and make Phoenix always
   fit in middle of screen.
 

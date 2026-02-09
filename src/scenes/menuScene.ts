@@ -32,4 +32,5 @@ export class MenuScene extends Scene {
 
   update(_: number) {}
   destroyScene() {}
+  onResize() {}
 }

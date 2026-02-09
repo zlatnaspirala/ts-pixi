@@ -81,10 +81,19 @@ npx typedoc --logLevel Verbose
 - In aceOfShadowsScene Scene gsap lib is't used.
   I create class Position (Similar functionality with gsap)
 - In Magic Words i use gsap.
+- In PhoenixFlame scene i use `onResize` and make Phoenix always
+  fit in middle of screen.
 
 ### Important notes about v8
 
-- In Pixi v8:
-  Application is async
-  app.view is gone
-  Canvas is created only after init()
+In Pixi v8:
+
+ - Application is async
+ - app.view is gone
+ - Canvas is created only after init()
+
+More links for learning: 
+
+ - https://pixijs.download/dev/docs/rendering.WebGPURenderer.html
+
+

@@ -29,4 +29,8 @@ export class SceneManager {
   static update(delta: number) {
     this.currentScene?.update(delta);
   }
+
+  static onResize() {
+    this.currentScene?.onResize();
+  }
 }

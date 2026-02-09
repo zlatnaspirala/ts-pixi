@@ -20,6 +20,7 @@ export class PhoenixFlameScene extends Scene {
   private flames: FlameSprite[]=[];
   private elapsedTime=0;
   private phoenixContainer: PIXI.Container;
+  private positions: any[]=[];
 
   constructor () {
     super();
@@ -39,8 +40,8 @@ export class PhoenixFlameScene extends Scene {
   }
 
   async createFlame() {
-    const texture=await PIXI.Assets.load('./assets/textures/flame1.webp');
-    const textureBody=await PIXI.Assets.load('./assets/textures/flame2.webp');
+    const texture=await PIXI.Assets.load('/assets/textures/flame1.webp');
+    const textureBody=await PIXI.Assets.load('/assets/textures/flame2.webp');
     const COLS=6;
     const ROWS=5;
     let frames=[];
@@ -49,7 +50,7 @@ export class PhoenixFlameScene extends Scene {
     framesBody.push(...genFramesFromTex(3, 3, textureBody));
     const centerX=window.innerWidth/2;
     const centerY=window.innerHeight*0.5;
-    const positions=[
+    this.positions=[
       // HEAD
       { x: 0, y: -150, scale: 1.8, alpha: 1, rot: 0 },
       // MAIN BODY
@@ -58,18 +59,18 @@ export class PhoenixFlameScene extends Scene {
       { x: -60, y: -80, scale: 2.0, alpha: 0.9, rot: -0.4 },
       { x: -130, y: -110, scale: 2.9, alpha: 0.8, rot: -0.9 },
       // Lower wing part
-      { x: -100, y: 10, scale: 1.7, alpha: 0.8, rot: -0.2 },
+      // { x: -100, y: 10, scale: 1.7, alpha: 0.8, rot: -0.2 },
       // RIGHT WING (Mirror)
       { x: 60, y: -70, scale: 2.0, alpha: 0.9, rot: 0.4 },
       { x: 130, y: -110, scale: 2.9, alpha: 0.8, rot: 0.9 },
-      { x: 100, y: 10, scale: 1.7, alpha: 0.8, rot: 0.2 },
+      // { x: 100, y: 10, scale: 1.7, alpha: 0.8, rot: 0.2 },
       // TAIL (Flowing down)
       { x: -40, y: 160, scale: 1.8, alpha: 0.7, rot: 0.2 },
       { x: 40, y: 160, scale: 1.8, alpha: 0.7, rot: -0.2 },
       { x: 0, y: 220, scale: 1.5, alpha: 0.6, rot: 0 }
     ];
 
-    positions.forEach((pos, index) => {
+    this.positions.forEach((pos, index) => {
       let flame=new PIXI.AnimatedSprite(index==1? framesBody:frames);
       flame.anchor.set(0.5, 0.8);
       flame.x=centerX+pos.x;
@@ -115,6 +116,20 @@ export class PhoenixFlameScene extends Scene {
       sprite.scale.set(flameData.scaleBase+pulse);
       // Flickering Alpha
       sprite.alpha=0.7+Math.random()*0.3;
+    });
+  }
+
+  onResize() {
+    const newCenterX=window.innerWidth/2;
+    const newCenterY=window.innerHeight*0.5;
+    this.flames.forEach((flameData, index) => {
+      const pos=this.positions[index];
+      if(pos) {
+        flameData.baseX=newCenterX+pos.x;
+        flameData.baseY=newCenterY+pos.y;
+        flameData.sprite.x=flameData.baseX;
+        flameData.sprite.y=flameData.baseY;
+      }
     });
   }
 

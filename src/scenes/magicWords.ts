@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { getDataFromLink, isMobile } from "../utils/utils";
 import { Scene } from "../core/scene";
 import { loadUrlTexture } from "../resources/textures";
-import { Avatar, Emoji, DialogLine  } from "../types/appDefinitions";
+import { Avatar, Emoji, DialogLine } from "../types/appDefinitions";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { addFPS, createButton } from "../services/helpers-methods";
 import gsap from "gsap";
@@ -21,7 +21,7 @@ export class MagicWords extends Scene {
   private dialogAppearInterval: number=350;
   private winDialog: DialogWindow|null;
   // private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
-  private testFilters: any[] = [];
+  private testFilters: any[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
 
@@ -50,8 +50,8 @@ export class MagicWords extends Scene {
     btnBack.position.y=perToPixHeight(5);
     btnBack.position.x=perToPixWidth(5);
     this.addChild(btnBack);
-    this.addFPS = addFPS.bind(this);
-    this.fpsText = this.addFPS(this);
+    this.addFPS=addFPS.bind(this);
+    this.fpsText=this.addFPS(this);
   }
 
   private renderDialog() {
@@ -96,7 +96,7 @@ export class MagicWords extends Scene {
 
   private createDialogBox(line: DialogLine, stageWidth=800): PIXI.Container {
     const container=new PIXI.Container();
-    if (this.avatars.get(line.name) == null || this.avatars.get(line.name) == undefined) {
+    if(this.avatars.get(line.name)==null||this.avatars.get(line.name)==undefined) {
       console.log("NO AVATAR REGISTRED ICON DETECT")
     }
     const avatarInfo=this.avatars.get(line.name);
@@ -293,8 +293,9 @@ export class MagicWords extends Scene {
         f.resources.timeUniforms.update()
       })
     }
-    if (this.app && this.fpsText) this.fpsText.text = `${Math.round(this.app.ticker.FPS)}`;
+    if(this.app&&this.fpsText) this.fpsText.text=`${Math.round(this.app.ticker.FPS)}`;
   }
 
   destroyScene() {}
+  onResize() {}
 }

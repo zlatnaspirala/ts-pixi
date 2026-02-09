@@ -30,6 +30,7 @@ app.init({
 
   window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight);
+    SceneManager.onResize();
   });
 
   window.addEventListener('pointerdown', onFirstInteraction);

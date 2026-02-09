@@ -15,6 +15,7 @@ export class AceOfShadowsScene extends Scene {
   private totalStackCards=144;
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private task1: any=0;
 
   constructor () {
     super();
@@ -55,19 +56,26 @@ export class AceOfShadowsScene extends Scene {
         e.position.set(e.pos.x, e.pos.y);
       }
     }
-    if (this.app && this.fpsText) this.fpsText.text = `${Math.round(this.app.ticker.FPS)}`;
+    if(this.app&&this.fpsText) this.fpsText.text=`${Math.round(this.app.ticker.FPS)}`;
   }
 
   startCardMovement() {
-    let task1=setInterval(() => {
+    this.task1=setInterval(() => {
       if(!this.stack1||this.stack1.cards.length===0) return;
       const card=this.stack1.top();
       if(!card) {
-        clearInterval(task1);
-        task1=0;
+        clearInterval(this.task1);
+        this.task1=0;
         return;
       }
-      const worldPos=card.getGlobalPosition();
+      let worldPos;
+      try {
+        worldPos=card.getGlobalPosition();
+      } catch(err) {
+        clearInterval(this.task1);
+        this.task1=0
+        return;
+      }
       this.stack1.pop();
       this.stack2.addChild(card);
       this.stack2.cards.push(card);
@@ -90,4 +98,6 @@ export class AceOfShadowsScene extends Scene {
     this.entities.length=0;
     this.stack1.destroy({ children: true });
   }
+
+  onResize() {}
 }

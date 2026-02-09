@@ -18,3 +18,5 @@ export interface DialogLine {
   name: string;
   text: string;
 }
+
+export type EasingFn=(t: number) => number;

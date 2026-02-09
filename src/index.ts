@@ -7,7 +7,6 @@ export * from "./components/phoenixFlame";
 export * from "./core/position";
 export * from "./core/scene";
 export * from "./core/sceneManager";
-export * from "./core/types";
 
 export * from "./resources/literails";
 export * from "./resources/textures";

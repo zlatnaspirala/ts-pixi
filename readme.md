@@ -1,8 +1,12 @@
-
 ## PIXI-TS
+### Version 1.0
+
+Public demo: 
 
 ## Objective
-  Test PIXI power
+
+  - Test PIXI power.
+
 
 ### Project structure
 
@@ -10,10 +14,16 @@
 pixi-ts-architecture/
 │
 ├── src/
-│   ├── main.ts
+│   ├── main.ts                 [Main app instance]
+│   ├── index.ts                [For docs gen also for npm publish]
 │   ├── core/
-│   │   ├── Scene.ts
-│   │   └── SceneManager.ts
+│   │   ├── position.ts
+│   │   ├── scene.ts
+│   │   └── sceneManager.ts
+│   │
+│   ├── types/
+│   │   ├── appDefinitions.ts
+│   │   └── globalDefinitions.ts
 │   │
 │   ├── scenes/
 │   │   └── MenuScene.ts
@@ -21,39 +31,56 @@ pixi-ts-architecture/
 │   │   └── MagicWords.ts
 │   │
 │   ├── components/
-│   └── utils/
-│       └── utils.ts
+│   │   └── card-stack.ts       [holder for cards]
+│   │   └── card.ts             [card entity]
+│   │   └── dialogBox.ts        [standalone popup with dragging&scroll]
+│   │   └── phonenixFlame.ts
+│   │
+│   ├── utils/
+│   │   └── utils.ts            [Small helpers funcs]
+│   │
+│   ├── shaders/ 
+│   │   └── base.ts             [webGL/webGPU context]
+│   │
+│   ├── services/ 
+│   │   └── helpers-methods.ts  [Common operations]
+│   │
+│   └── resources/
+│       └── literals.ts         [Simple object/consts store place]
+│       └── shaders.ts          [For webGL or webGPU context/job]
+│       └── textures.ts         [Simple textures operation]
 │
-├── index.html
-├── tsconfig.json
-├── vite.config.ts
-└── package.json
+├── typedoc.json                [Api docs generator]
+├── index.html                  [Main index.HTML]
+├── tsconfig.json               [Ts config]
+├── vite.config.ts              [Compiler stuff]
+└── package.json                [Defines project metadata, dependencies...]
 </pre>
 
-
 Install deps:
+
 ```js
 npm i
 ```
 
 Run dev:
+
 ```js
 npm run dev
 ```
 
 Quick sanity check
 Run:
+
 ```js
 npx typedoc --logLevel Verbose
 ```
-
 
 ### About object/movement policy
 
 - In aceOfShadowsScene Scene iam not use gsap lib.
   I create class Position (Similar functionality with gsap)
 - In Magic Words i use gsap.
-
 
 ### Important notes about v8
 

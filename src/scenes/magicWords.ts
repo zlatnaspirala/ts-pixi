@@ -61,7 +61,7 @@ export class MagicWords extends Scene {
   private renderDialog() {
     let yPos=20;
     this.winDialog=new DialogWindow();
-    const contentWidth=isMobile()? perToPixWidth(90):665;
+    const contentWidth=isMobile()? perToPixWidth(85):665;
 
     this.dialogLines.forEach((line, i) => {
       const dialogBox=this.createDialogBox(line, contentWidth);
@@ -76,7 +76,7 @@ export class MagicWords extends Scene {
         y: targetY,
         alpha: 1,
         scale: 1,
-        duration: 0.45,
+        duration: 0.5,
         delay: baseDelay,
         ease: "power3.out",
         onStart: () => {
@@ -86,8 +86,8 @@ export class MagicWords extends Scene {
             gsap.fromTo(mask, { width: 0 },
               {
                 width: fullWidth,
-                duration: 0.2,
-                delay: baseDelay+0.2,
+                duration: 0.1,
+                delay: baseDelay,
                 ease: "none"
               }
             );

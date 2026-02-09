@@ -10,7 +10,7 @@ export class DialogWindow extends PIXI.Container {
   private scrollArea: PIXI.Container;
   private isDragging=false;
   private dragOffset={ x: 0, y: 0 };
-  private windowWidth=isMobile()? perToPixWidth(90):700;
+  private windowWidth=isMobile()? perToPixWidth(93):700;
   private windowHeight=window.innerHeight*0.8;
   private headerHeight=60;
   private contentHeight: number;

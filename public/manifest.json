@@ -4,6 +4,7 @@
   "description": "Test pixi power",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
+  "orientation": "portrait",
   "display": "standalone",
   "start_url": "/",
   "icons": [

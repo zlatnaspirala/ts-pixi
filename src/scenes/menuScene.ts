@@ -50,15 +50,9 @@ export class MenuScene extends Scene {
 
     const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle });
     bText.anchor.set(0.5);
-
-    // --- UNIFIED WIDTH LOGIC ---
-    // Set a fixed width for all buttons. 
-    // On mobile, you might want this to be wider (e.g., 80% of screen)
     const fixedWidth=isMobile()? perToPixWidth(40):300;
-    const fixedHeight=isMobile()? 50:60;
-
+    const fixedHeight=isMobile()? 40:60;
     const background=new PIXI.Graphics();
-
     // Path -> Fill -> Stroke
     background
       .roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
@@ -67,13 +61,10 @@ export class MenuScene extends Scene {
 
     container.addChild(background);
     container.addChild(bText);
-
     // Interaction
     container.eventMode='static';
     container.cursor='pointer';
-
     container.on("pointerdown", () => SceneManager.change(new Class()));
-
     // Animation
     container.on("pointerover", () => {
       gsap.to(container.scale, { x: 1.05, y: 1.05, duration: 0.2 });
@@ -83,7 +74,6 @@ export class MenuScene extends Scene {
       gsap.to(container.scale, { x: 1, y: 1, duration: 0.2 });
       background.tint=0xffffff;
     });
-
     this.positionButton(container, this.buttons.length);
     this.buttons.push(container as any);
     this.addChild(container);

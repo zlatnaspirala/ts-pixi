@@ -33,7 +33,7 @@ export class MagicWords extends Scene {
     });
 
     getDataFromLink(this.link1).then((r: any) => {
-      console.log(r.avatars)
+      // console.log(r.avatars)
       const avatarPromises=r.avatars.map((a: Avatar) =>
         loadUrlTexture(a.url).then((tex) => {
           this.avatarTextures.set(a.name, tex);

@@ -9,9 +9,10 @@ import { PhoenixFlameScene } from "./phoenixFlame";
 import { addFPS } from "../services/helpers-methods";
 import { getOrientation, isMobile } from "../utils/utils";
 import { DialogWindow } from "../components/dialogBox";
+import gsap from "gsap";
 
 export class MenuScene extends Scene {
-  private buttons: PIXI.Text[]=[];
+  private buttons: PIXI.Container[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
   private welcomeDialog: DialogWindow|undefined;
@@ -45,27 +46,56 @@ export class MenuScene extends Scene {
   }
 
   addBtn(t: string, Class: new () => Scene) {
-    const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle }) as PIXI.Text;
+    const container=new PIXI.Container();
+
+    const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle });
     bText.anchor.set(0.5);
-    // Middle of screen - Avoid pixels absolute numbers -
-    // in percentage we can make response scene for all devices 
-    // with same code.
-    this.positionButton(bText, this.buttons.length);
-    bText.interactive=true;
-    bText.cursor="pointer";
-    bText.on("pointerdown", () => {
-      SceneManager.change(new Class());
+
+    // --- UNIFIED WIDTH LOGIC ---
+    // Set a fixed width for all buttons. 
+    // On mobile, you might want this to be wider (e.g., 80% of screen)
+    const fixedWidth=isMobile()? perToPixWidth(40):300;
+    const fixedHeight=isMobile()? 50:60;
+
+    const background=new PIXI.Graphics();
+
+    // Path -> Fill -> Stroke
+    background
+      .roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
+      .fill({ color: 0x000000, alpha: 0.6 })
+      .stroke({ width: 4, color: 0x3498db, alpha: 1 });
+
+    container.addChild(background);
+    container.addChild(bText);
+
+    // Interaction
+    container.eventMode='static';
+    container.cursor='pointer';
+
+    container.on("pointerdown", () => SceneManager.change(new Class()));
+
+    // Animation
+    container.on("pointerover", () => {
+      gsap.to(container.scale, { x: 1.05, y: 1.05, duration: 0.2 });
+      background.tint=0x00ffcc;
     });
-    this.buttons.push(bText);
-    this.addChild(bText);
+    container.on("pointerout", () => {
+      gsap.to(container.scale, { x: 1, y: 1, duration: 0.2 });
+      background.tint=0xffffff;
+    });
+
+    this.positionButton(container, this.buttons.length);
+    this.buttons.push(container as any);
+    this.addChild(container);
   }
 
-  private positionButton(btn: PIXI.Text, index: number) {
+  private positionButton(btn: PIXI.Container, index: number) {
+    // Determine vertical spacing based on device
+    const spacing=isMobile()&&getOrientation()==="landscape"? 16:10;
+
     btn.position.set(
       perToPixWidth(50),
-      isMobile()==true?
-        getOrientation()==="landscape"? perToPixHeight(30+index*16):perToPixHeight(30+index*8)
-        :perToPixHeight(30+index*8)
+      perToPixHeight(35+index*spacing)
     );
   }
 

@@ -74,33 +74,34 @@ export class MagicWords extends Scene {
       const dialogBox=this.createDialogBox(line, contentWidth);
       const targetY=yPos;
       yPos+=dialogBox.height+15;
-      dialogBox.y=0;
+
+      dialogBox.y=targetY-20; // Start slightly lower for a "pop up" effect
       dialogBox.alpha=0;
-      dialogBox.scale.set(0.95);
+
       if(this.winDialog) this.winDialog.addChild(dialogBox);
+
       const baseDelay=i*this.dialogAppearInterval/1000;
+      const mask=(dialogBox as any)._textMask;
+      const fullWidth=(dialogBox as any)._textWidth;
+
+      // 1. Animate the Container (Fade and Move)
       gsap.to(dialogBox, {
         y: targetY,
         alpha: 1,
-        scale: 1,
         duration: 0.5,
         delay: baseDelay,
-        ease: "power3.out",
-        onStart: () => {
-          const mask=(dialogBox as any)._textMask;
-          const fullWidth=(dialogBox as any)._textWidth;
-          if(mask&&fullWidth) {
-            gsap.fromTo(mask, { width: 0 },
-              {
-                width: fullWidth,
-                duration: 0.1,
-                delay: baseDelay,
-                ease: "none"
-              }
-            );
-          }
-        }
+        ease: "power3.out"
       });
+
+      // 2. Animate the Mask (The "Typing" reveal)
+      if(mask&&fullWidth) {
+        gsap.to(mask, {
+          width: fullWidth,
+          duration: 0.9,
+          delay: baseDelay,
+          ease: "none"
+        });
+      }
     });
     this.addChild(this.winDialog);
   }
@@ -138,13 +139,15 @@ export class MagicWords extends Scene {
     const gap=12;
 
     const textContainer=this.parseText(line.text, maxWidth-padding*2);
+    const bounds=textContainer.getLocalBounds();
+
 
     // Bubble with neon glow
     const bubble=new PIXI.Graphics();
     const bubbleColor=side==="left"? 0x3498db:0x2ecc71;
 
-    const bubbleWidth=textContainer.width+padding*2;
-    const bubbleHeight=textContainer.height+padding*2;
+    const bubbleWidth=bounds.width+padding*2;
+    const bubbleHeight=bounds.height+padding*2;
 
     bubble.roundRect(0, 0, bubbleWidth, bubbleHeight, 12);
     bubble.fill({ color: bubbleColor, alpha: 0.2 });
@@ -225,13 +228,15 @@ export class MagicWords extends Scene {
     container.addChild(textContainer);
 
     const textMask=new PIXI.Graphics();
-    textMask.rect(
-      textContainer.x,
-      textContainer.y,
-      textContainer.width,
-      textContainer.height
-    );
+    textMask.rect(0, 0, bounds.width, bounds.height);
     textMask.fill(0xffffff);
+
+    // MATCH the positions exactly
+    textMask.x=textContainer.x;
+    textMask.y=textContainer.y;
+
+    // IMPORTANT: Start width at 0.01 instead of 0 (some engines bug at 0)
+    textMask.width=0.01;
 
     container.addChild(textMask);
     textContainer.mask=textMask;

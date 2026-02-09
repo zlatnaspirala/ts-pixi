@@ -7,6 +7,7 @@ import { addFPS, createButton } from "../services/helpers-methods";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
+import { getOrientation, isMobile } from "../utils/utils";
 
 export class AceOfShadowsScene extends Scene {
   private entities: any[]=[];
@@ -22,8 +23,14 @@ export class AceOfShadowsScene extends Scene {
     loadTexture("./assets/textures/card1.webp").then((cardTexture) => {
       this.stack1=new CardStack();
       this.stack2=new CardStack();
-      this.stack1.position.set(window.innerWidth/3, window.innerHeight/4);
-      this.stack2.position.set(window.innerWidth/3*2, window.innerHeight/4);
+      this.stack1.position.set(
+        window.innerWidth/3,
+        isMobile() ? getOrientation()==="portrait" ? window.innerHeight/4 : window.innerHeight/100*22 : window.innerHeight/4
+      );
+      this.stack2.position.set(
+        window.innerWidth/3*2, 
+        isMobile() ? getOrientation()==="portrait" ? window.innerHeight/4 : window.innerHeight/100*22 : window.innerHeight/4
+      );
       this.addChild(this.stack1);
       this.addChild(this.stack2);
       for(let i=0; i<this.totalStackCards; i++) {

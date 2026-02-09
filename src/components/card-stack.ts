@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Card } from "./card";
+import { getOrientation, isMobile } from "../utils/utils";
 
 /**
  * @description
@@ -9,12 +10,14 @@ import { Card } from "./card";
  */
 export class CardStack extends PIXI.Container {
   cards: Card[]=[];
+  private YOffset: number=3;
   constructor () {
     super();
+    this.YOffset=(isMobile()? getOrientation()==="landscape"? 1:2:3);
     this.sortableChildren=true;
   }
   push(card: Card) {
-    const offsetY=this.cards.length*3;
+    const offsetY=this.cards.length*this.YOffset;
     card.pos.setPosition(0, offsetY, 0);
     card.zIndex=this.cards.length;
     this.cards.push(card);

@@ -1,3 +1,4 @@
+import './libs/hacker-timer.ts'; 
 import * as PIXI from "pixi.js";
 import { SceneManager } from "./core/sceneManager";
 import { MenuScene } from "./scenes/menuScene";

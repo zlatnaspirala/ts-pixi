@@ -1,9 +1,21 @@
 {
   "entryPoints": ["src/index.ts"],
   "out": "docs",
+  "blockTags": [
+    "@description",
+    "@param",
+    "@returns",
+    "@type"
+  ],
   "externalSymbolLinkMappings": {
     "pixi.js": {
+      "Graphics": "https://pixijs.download/dev/docs/scene.Graphics.html",
+      "Sprite": "https://pixijs.download/dev/docs/scene.Sprite.html",
+      "Container": "https://pixijs.download/dev/docs/scene.Container.html",
       "*": "https://pixijs.download/dev/docs/"
     }
+  },
+  "validation": {
+    "invalidLink": false
   }
 }

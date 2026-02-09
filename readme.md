@@ -2,7 +2,7 @@
 ### Version 1.0
 
  - [Public demo](https://maximumroulette.com/apps/ts-pixi/)
- - [API Docs](https://maximumroulette.com/apps/ts-pixi/)
+ - [API Docs](https://maximumroulette.com/apps/ts-pixi/docs/)
 
 
 ## Objective

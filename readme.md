@@ -69,7 +69,7 @@ Run dev:
 npm run dev
 ```
 
-Quick sanity check
+Quick sanity check and generate API docs
 Run:
 
 ```js
@@ -95,5 +95,3 @@ In Pixi v8:
 More links for learning: 
 
  - https://pixijs.download/dev/docs/rendering.WebGPURenderer.html
-
-

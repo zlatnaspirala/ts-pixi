@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { getDataFromLink, isMobile } from "../utils/utils";
 import { Scene } from "../core/scene";
-import { loadUrlTexture } from "../resources/textures";
+import { loadTexture, loadUrlTexture } from "../resources/textures";
 import { Avatar, Emoji, DialogLine } from "../types/appDefinitions";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { addFPS, createButton } from "../services/helpers-methods";
@@ -20,7 +20,6 @@ export class MagicWords extends Scene {
   private dialogLines: DialogLine[]=[];
   private dialogAppearInterval: number=350;
   private winDialog: DialogWindow|null;
-  // private avatarFilters=new Map<PIXI.Sprite, PIXI.Filter>();
   private testFilters: any[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
@@ -28,6 +27,11 @@ export class MagicWords extends Scene {
   constructor () {
     super();
     this.winDialog=null;
+
+    loadTexture('./assets/textures/default.png').then((tex) => {
+      this.avatarTextures.set('default', tex);
+    });
+
     getDataFromLink(this.link1).then((r: any) => {
       console.log(r.avatars)
       const avatarPromises=r.avatars.map((a: Avatar) =>
@@ -96,10 +100,29 @@ export class MagicWords extends Scene {
 
   private createDialogBox(line: DialogLine, stageWidth=800): PIXI.Container {
     const container=new PIXI.Container();
+    let avatarInfo;
     if(this.avatars.get(line.name)==null||this.avatars.get(line.name)==undefined) {
-      console.log("NO AVATAR REGISTRED ICON DETECT")
+      console.log("NO AVATAR REGISTRED NAME DETECT")
+      avatarInfo={
+        name: line.name,
+        url: "",
+        position: 'left' // must be left or right
+      };
+    } else {
+      avatarInfo=this.avatars.get(line.name);
     }
-    const avatarInfo=this.avatars.get(line.name);
+
+    const nameTag=new PIXI.Text({
+      text: avatarInfo?.name||line.name,
+      style: {
+        ...magicWordsTextStyle,
+        fontSize: 12,
+        fill: 0xffffff,
+        fontWeight: 'bold'
+      }
+    });
+    nameTag.alpha=0.7;
+
     const side=avatarInfo?.position??"left";
 
     const maxWidth=stageWidth*0.65;
@@ -126,35 +149,29 @@ export class MagicWords extends Scene {
 
     // Avatar - LARGER and more visible
     let avatar: PIXI.Sprite|null=null;
+
+    const avatarContainer=new PIXI.Container();
     if(this.avatarTextures.has(line.name)) {
-      const avatarContainer=new PIXI.Container();
-
       avatar=new PIXI.Sprite(this.avatarTextures.get(line.name)!);
-      avatar.width=avatar.height=avatarSize;
-      avatarContainer.addChild(avatar);
-      // const blurFilter=new PIXI.BlurFilter();
-      // blurFilter.blur=1.1;
-      // blurFilter.enabled=true;
-      // avatar.filters=[blurFilter];
-      let myF=createGlowFilter();
-      this.testFilters.push(myF)
-      // this.testFilter.resolution=winDialog.devicePixelRatio;
-      avatar.filters=[myF];
-      //
-      // Circular mask - FIX: mask must be same size as avatar
-      const avatarMask=new PIXI.Graphics();
-      avatarMask.circle(avatarSize/2, avatarSize/2, avatarSize/2);
-      avatarMask.fill(0xffffff);
-      avatarContainer.addChild(avatarMask);
-      avatar.mask=avatarMask;
-      // Neon ring around avatar - THICKER
-      const avatarRing=new PIXI.Graphics();
-      avatarRing.circle(avatarSize/2, avatarSize/2, avatarSize/2);
-      avatarRing.stroke({ width: 4, color: bubbleColor, alpha: 0.9 });
-      avatarContainer.addChild(avatarRing);
-      avatar=avatarContainer as any;
+    } else {
+      avatar=new PIXI.Sprite(this.avatarTextures.get('default')!);
     }
-
+    avatar.width=avatar.height=avatarSize;
+    avatarContainer.addChild(avatar);
+    let myF=createGlowFilter();
+    this.testFilters.push(myF)
+    avatar.filters=[myF];
+    const avatarMask=new PIXI.Graphics();
+    avatarMask.circle(avatarSize/2, avatarSize/2, avatarSize/2);
+    avatarMask.fill(0xffffff);
+    avatarContainer.addChild(avatarMask);
+    avatar.mask=avatarMask;
+    // Neon ring around avatar - THICKER
+    const avatarRing=new PIXI.Graphics();
+    avatarRing.circle(avatarSize/2, avatarSize/2, avatarSize/2);
+    avatarRing.stroke({ width: 4, color: bubbleColor, alpha: 0.9 });
+    avatarContainer.addChild(avatarRing);
+    avatar=avatarContainer as any;
     if(side==="left") {
       if(avatar) {
         avatar.x=5;
@@ -163,6 +180,11 @@ export class MagicWords extends Scene {
         bubble.x=avatarSize+gap;
         innerBubble.x=bubble.x;
         innerBubble.y=bubble.y;
+
+        nameTag.x=avatar.x+(avatarSize/2)-(nameTag.width/2);
+        nameTag.y=avatarSize+5;
+        container.addChild(nameTag);
+
       } else {
         bubble.x=0;
         innerBubble.x=0;
@@ -181,6 +203,10 @@ export class MagicWords extends Scene {
         avatar.x=startX+bubbleWidth+gap; // Avatar after bubble
         avatar.y=0;
         container.addChild(avatar);
+
+        nameTag.x=avatar.x+(avatarSize/2)-(nameTag.width/2);
+        nameTag.y=avatarSize+5;
+        container.addChild(nameTag);
       }
     }
 

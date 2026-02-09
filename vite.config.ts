@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   // base: '/apps/ts-pixi/',
-  base: "./",
+  // base: "./",
   server: {
     port: 8080
   },

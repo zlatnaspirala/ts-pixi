@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { MyParticleSprite } from "../types/globalDefinitions";
 
-export class PhoenixFlame extends PIXI.Container {
+export class PhoenixFlameGraphics extends PIXI.Container {
   private particles: MyParticleSprite[]=[];
   private particleTexture: PIXI.Texture;
   private emitterX: number;

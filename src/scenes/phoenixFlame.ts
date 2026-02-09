@@ -4,6 +4,7 @@ import { addFPS, createButton, genFramesFromTex } from "../services/helpers-meth
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
+// import { PhoenixFlameGraphics } from "../components/phoenixFlame";
 
 interface FlameSprite {
   sprite: PIXI.AnimatedSprite;
@@ -21,6 +22,8 @@ export class PhoenixFlameScene extends Scene {
   private elapsedTime=0;
   private phoenixContainer: PIXI.Container;
   private positions: any[]=[];
+  // bonus
+  // private graphicsDraws:PhoenixFlameGraphics;
 
   constructor () {
     super();
@@ -37,11 +40,14 @@ export class PhoenixFlameScene extends Scene {
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
     this.createFlame();
+
+    // this.graphicsDraws = new PhoenixFlameGraphics(perToPixWidth(50), perToPixHeight(50));
+    // this.addChild(this.graphicsDraws);
   }
 
   async createFlame() {
-    const texture=await PIXI.Assets.load('/assets/textures/flame1.webp');
-    const textureBody=await PIXI.Assets.load('/assets/textures/flame2.webp');
+    const texture=await PIXI.Assets.load('./assets/textures/flame1.webp');
+    const textureBody=await PIXI.Assets.load('./assets/textures/flame2.webp');
     const COLS=6;
     const ROWS=5;
     let frames=[];
@@ -117,6 +123,8 @@ export class PhoenixFlameScene extends Scene {
       // Flickering Alpha
       sprite.alpha=0.7+Math.random()*0.3;
     });
+
+    // if (this.graphicsDraws) this.graphicsDraws.update(deltaMS);
   }
 
   onResize() {

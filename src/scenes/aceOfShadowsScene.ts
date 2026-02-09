@@ -19,7 +19,7 @@ export class AceOfShadowsScene extends Scene {
 
   constructor () {
     super();
-    loadTexture("/assets/textures/card1.webp").then((cardTexture) => {
+    loadTexture("./assets/textures/card1.webp").then((cardTexture) => {
       this.stack1=new CardStack();
       this.stack2=new CardStack();
       this.stack1.position.set(window.innerWidth/3, window.innerHeight/4);

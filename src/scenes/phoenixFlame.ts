@@ -109,11 +109,9 @@ export class PhoenixFlameScene extends Scene {
 
   update(deltaMS: number) {
     this.elapsedTime+=deltaMS/1000;
-
     if(this.app&&this.fpsText) {
       this.fpsText.text=`${Math.round(this.app.ticker.FPS)}`;
     }
-
     this.flames.forEach((flameData, index) => {
       const sprite=flameData.sprite;
       // Horizontal swaying (Wind effect)
@@ -141,7 +139,6 @@ export class PhoenixFlameScene extends Scene {
         flameData.sprite.y=flameData.baseY;
       }
     });
-
     if(this.fpsText&&this.fpsTitle) {
       this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
       this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;

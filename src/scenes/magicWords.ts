@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { getDataFromLink, isMobile } from "../utils/utils";
+import { getDataFromLink, getOrientation, isMobile } from "../utils/utils";
 import { Scene } from "../core/scene";
 import { loadTexture, loadUrlTexture } from "../resources/textures";
 import { Avatar, Emoji, DialogLine } from "../types/appDefinitions";
@@ -67,7 +67,10 @@ export class MagicWords extends Scene {
 
   private renderDialog() {
     let yPos=20;
-    this.winDialog=new DialogWindow();
+    this.winDialog=new DialogWindow(
+      isMobile()? perToPixWidth(93):700,
+      isMobile()? getOrientation()=="portrait"? perToPixHeight(85):perToPixHeight(80):window.innerHeight*0.8
+    );
     const contentWidth=isMobile()? perToPixWidth(85):665;
 
     this.dialogLines.forEach((line, i) => {

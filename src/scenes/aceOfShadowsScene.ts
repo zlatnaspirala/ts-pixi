@@ -7,7 +7,8 @@ import { addFPS, createButton } from "../services/helpers-methods";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { MenuScene } from "./menuScene";
 import { SceneManager } from "../core/sceneManager";
-import { getOrientation, isMobile } from "../utils/utils";
+import { lockLandscape, getOrientation, isMobile, lockPortrait } from "../utils/utils";
+import { FORCE_MOBILE_LOCK_SCREEN } from "../appConfig";
 
 export class AceOfShadowsScene extends Scene {
   private entities: any[]=[];
@@ -26,11 +27,11 @@ export class AceOfShadowsScene extends Scene {
       this.stack2=new CardStack();
       this.stack1.position.set(
         window.innerWidth/3,
-        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*22:window.innerHeight/4
+        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*15:window.innerHeight/4
       );
       this.stack2.position.set(
         window.innerWidth/3*2,
-        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*22:window.innerHeight/4
+        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*15:window.innerHeight/4
       );
       this.addChild(this.stack1);
       this.addChild(this.stack2);
@@ -49,6 +50,32 @@ export class AceOfShadowsScene extends Scene {
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
     this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
+
+
+    if(screen.orientation) {
+      screen.orientation.addEventListener('change', () => {
+        console.log(`Current orientation is ${screen.orientation.type}`);
+      });
+    }
+
+    // One of options
+    // Lock orientation - Easy by not ultimate solution.
+    // Not 100% safe - WOrks only after first user request (touch event).
+    if(FORCE_MOBILE_LOCK_SCREEN===true) {
+      if(getOrientation()==="landscape") {
+        lockLandscape().then(() => {
+          console.info('lock pass!')
+        }).catch(() => {
+          console.info('lock fail!')
+        });
+      } else {
+        lockPortrait().then(() => {
+          console.info('lock pass!')
+        }).catch(() => {
+          console.info('lock fail!')
+        });
+      }
+    }
   }
 
   update(_deltaMS: number) {
@@ -109,9 +136,24 @@ export class AceOfShadowsScene extends Scene {
   }
 
   onResize() {
-    if(this.fpsText&&this.fpsTitle) {
-      this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
-      this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;
-    }
+    const isPortrait=getOrientation()==="portrait";
+    const stackY=isMobile()? (isPortrait? perToPixHeight(25):perToPixHeight(15)):perToPixHeight(25);
+    if(this.stack1) this.stack1.position.set(window.innerWidth/3, stackY);
+    if(this.stack2) this.stack2.position.set((window.innerWidth/3)*2, stackY);
+    const allStacks=[this.stack1, this.stack2];
+    allStacks.forEach(stack => {
+      if(!stack) return;
+      stack.cards.forEach((card: Card) => {
+        card.updateLayout();
+        const index=stack.cards.indexOf(card);
+        const targetY=index*stack.YOffset;
+        if(!card.pos._active) {
+          card.y=targetY;
+          card.pos.y=targetY;
+        } else {
+          card.pos._to.y=targetY;
+        }
+      });
+    });
   }
 }

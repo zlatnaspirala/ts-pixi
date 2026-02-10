@@ -16,7 +16,7 @@ pixi-ts-architecture/
 │   ├── main.ts                 [Main app instance]
 │   ├── index.ts                [For docs gen also for npm publish]
 │   ├── core/
-│   │   ├── position.ts
+│   │   ├── position.ts         [self updated - not full solution yet]
 │   │   ├── scene.ts
 │   │   └── sceneManager.ts
 │   │
@@ -25,15 +25,16 @@ pixi-ts-architecture/
 │   │   └── globalDefinitions.ts
 │   │
 │   ├── scenes/
-│   │   └── MenuScene.ts
-│   │   └── AceOfShadowsScene.ts
-│   │   └── MagicWords.ts
+│   │   └── menuScene.ts
+│   │   └── aceOfShadowsScene.ts
+│   │   └── magicWords.ts
+│   │   └── phoenixFlame.ts
 │   │
 │   ├── components/
 │   │   └── card-stack.ts       [holder for cards]
 │   │   └── card.ts             [card entity]
 │   │   └── dialogBox.ts        [standalone popup with dragging&scroll]
-│   │   └── phonenixFlame.ts
+│   │   └── phonenixFlame.ts    [Used in menuScene]
 │   │
 │   ├── utils/
 │   │   └── utils.ts            [Small helpers funcs]
@@ -71,10 +72,18 @@ Run:</p>
 <h3 id="about-objectmovement-policy" class="tsd-anchor-link">About object/movement policy<a href="#about-objectmovement-policy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul>
 <li>In aceOfShadowsScene Scene gsap lib is't used.
-I create class Position (Similar functionality with gsap)</li>
+I create class Position (Similar functionality with gsap)
+I dont lock orientation on mobile devices. Change orientation handled.</li>
 <li>In MagicWords i use gsap. DialogPopup is draggable also on mobile devices.</li>
 <li>In PhoenixFlame scene i use <code>onResize</code> and make Phoenix always
 fit in middle of screen.</li>
+</ul>
+<p>&quot;Diametric positions&quot; method is not fully implemented.
+Need more time for :</p>
+<ul>
+<li>Self update on resize, change orientation.</li>
+<li>Hide complex calculation from top level classes and
+make it super simple &amp; reusable.</li>
 </ul>
 <h3 id="important-notes-about-v8" class="tsd-anchor-link">Important notes about v8<a href="#important-notes-about-v8" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>In Pixi v8:</p>

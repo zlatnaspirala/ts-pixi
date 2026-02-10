@@ -27,11 +27,46 @@ export class MenuScene extends Scene {
     this.addBtn("Ace of Shadows", AceOfShadowsScene);
     this.addBtn("Magic Words", MagicWords);
     this.addBtn("Phoenix Flame", PhoenixFlameScene);
+    this.renderDialog();
+    // arg are percents
+    this.graphicsDraws=new PhoenixFlameGraphics(
+      isMobile()? getOrientation()=="landscape"? 50:50:50,
+      isMobile()? getOrientation()=="landscape"? 130:110:80,
+      "star"
+    );
+    this.addChild(this.graphicsDraws);
+    this.graphicsDrawsTop=new PhoenixFlameGraphics(
+      isMobile()? getOrientation()=="landscape"? 50:50:50,
+      isMobile()? getOrientation()=="landscape"? -40:-10:80,
+      "base", -1);
+    this.addChild(this.graphicsDrawsTop);
+    this.addFPS=addFPS.bind(this);
+    this.fpsText=this.addFPS(this);
+    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
 
+    this.hitArea=new PIXI.Rectangle(0, 0, perToPixWidth(100), perToPixHeight(100));
+    this.eventMode='static';
+    this.on("pointerdown", () => {
+      this.removeDialog()
+    });
+
+    if(screen.orientation) {
+      screen.orientation.addEventListener('change', () => {
+        console.log(`Current orientation is ${screen.orientation.type}`);
+        // this.rebuildDialog()
+          this.removeDialog()
+      });
+    }
+  }
+
+  private renderDialog() {
     if(localStorage.getItem('first-touch')===null&&isMobile()===true) {
-      this.welcomeDialog=new DialogWindow();
+      this.welcomeDialog=new DialogWindow(
+        isMobile()? getOrientation()=="portrait"? perToPixWidth(80):perToPixWidth(50):700,
+        isMobile()? getOrientation()=="portrait"? perToPixHeight(46):perToPixHeight(80):window.innerHeight*0.8
+      );
       // const welcomeText=new PIXI.Text({ text: "Welcome here \n run fullscreen and start the game \n Click any where!", style: mainMenuBtnStyle }) as PIXI.Text;
-      this.welcomeText=new PIXI.Text({ text: "Welcome here Play for free  \nClick/Tap anywhere to start!", style: isMobile()? windowTitleStyle:mainMenuBtnStyle }) as PIXI.Text;
+      this.welcomeText=new PIXI.Text({ text: "  Welcome user    \n  Play for free    \nTap anywhere to start!", style: isMobile()? windowTitleStyle:mainMenuBtnStyle }) as PIXI.Text;
       this.welcomeDialog.eventMode='static';
       this.welcomeDialog.cursor='pointer';
       this.welcomeDialog.on("pointerdown", () => {
@@ -39,37 +74,38 @@ export class MenuScene extends Scene {
         if(this.welcomeDialog) this.removeChild(this.welcomeDialog);
       });
       this.welcomeDialog.addChild(this.welcomeText);
+      this.welcomeDialog.position.y=isMobile()? getOrientation()==="portrait"? perToPixHeight(20):perToPixHeight(10):perToPixHeight(20);
       this.welcomeText.position.x=this.welcomeDialog.width/2;
       this.welcomeText.position.y=this.welcomeDialog.height/4;
       this.welcomeText.anchor.set(0.5);
       this.addChild(this.welcomeDialog);
     }
+  }
 
-    // arg are percents
-    this.graphicsDraws=new PhoenixFlameGraphics(50, 80, "star");
-    this.addChild(this.graphicsDraws);
-    this.graphicsDrawsTop=new PhoenixFlameGraphics(50, 10, "base", -1);
-    this.addChild(this.graphicsDrawsTop);
+  private removeDialog() {
+    if(this.welcomeDialog) {
+      // keeps textures alive
+      this.welcomeDialog?.removeChildren();
+      this.removeChild(this.welcomeDialog);
+      this.welcomeDialog=undefined;
+    }
+  }
 
-    this.addFPS=addFPS.bind(this);
-    this.fpsText=this.addFPS(this);
-    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
+  private rebuildDialog() {
+    this.removeDialog();
+    this.renderDialog();
   }
 
   addBtn(t: string, Class: new () => Scene) {
     const container=new PIXI.Container();
-
     const bText=new PIXI.Text({ text: t, style: mainMenuBtnStyle });
     bText.anchor.set(0.5);
     const fixedWidth=isMobile()? getOrientation()==="portrait"? perToPixWidth(60):perToPixWidth(35):300;
     const fixedHeight=isMobile()? 43:63;
     const background=new PIXI.Graphics();
-    // Path -> Fill -> Stroke
-    background
-      .roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
+    background.roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
       .fill({ color: 0x000000, alpha: 0.6 })
       .stroke({ width: 2, color: 0x3498db, alpha: 1 });
-
     container.addChild(background);
     container.addChild(bText);
     // Interaction
@@ -93,7 +129,6 @@ export class MenuScene extends Scene {
   private positionButton(btn: PIXI.Container, index: number) {
     // Determine vertical spacing based on device
     const spacing=isMobile()&&getOrientation()==="landscape"? 16:10;
-
     btn.position.set(
       perToPixWidth(50),
       perToPixHeight(35+index*spacing)

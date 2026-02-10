@@ -17,7 +17,7 @@ pixi-ts-architecture/
 │   ├── main.ts                 [Main app instance]
 │   ├── index.ts                [For docs gen also for npm publish]
 │   ├── core/
-│   │   ├── position.ts
+│   │   ├── position.ts         [self updated - not full solution yet]
 │   │   ├── scene.ts
 │   │   └── sceneManager.ts
 │   │
@@ -26,15 +26,16 @@ pixi-ts-architecture/
 │   │   └── globalDefinitions.ts
 │   │
 │   ├── scenes/
-│   │   └── MenuScene.ts
-│   │   └── AceOfShadowsScene.ts
-│   │   └── MagicWords.ts
+│   │   └── menuScene.ts
+│   │   └── aceOfShadowsScene.ts
+│   │   └── magicWords.ts
+│   │   └── phoenixFlame.ts
 │   │
 │   ├── components/
 │   │   └── card-stack.ts       [holder for cards]
 │   │   └── card.ts             [card entity]
 │   │   └── dialogBox.ts        [standalone popup with dragging&scroll]
-│   │   └── phonenixFlame.ts
+│   │   └── phonenixFlame.ts    [Used in menuScene]
 │   │
 │   ├── utils/
 │   │   └── utils.ts            [Small helpers funcs]
@@ -80,9 +81,16 @@ npx typedoc --logLevel Verbose
 
 - In aceOfShadowsScene Scene gsap lib is't used.
   I create class Position (Similar functionality with gsap)
+  I dont lock orientation on mobile devices. Change orientation handled.
 - In MagicWords i use gsap. DialogPopup is draggable also on mobile devices.
 - In PhoenixFlame scene i use `onResize` and make Phoenix always
   fit in middle of screen.
+
+"Diametric positions" method is not fully implemented.
+Need more time for :
+ - Self update on resize, change orientation.
+ - Hide complex calculation from top level classes and
+   make it super simple & reusable.
 
 ### Important notes about v8
 

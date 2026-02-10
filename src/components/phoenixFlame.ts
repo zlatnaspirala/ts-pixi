@@ -92,7 +92,7 @@ export class PhoenixFlameGraphics extends PIXI.Container {
       // Create new particle
       const sprite=new PIXI.Sprite(this.particleTexture);
       sprite.anchor.set(0.5);
-      sprite.blendMode='add'; // Additive blending for glow
+      sprite.blendMode='add';
       this.addChild(sprite);
 
       const particle: MyParticleSprite={

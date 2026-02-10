@@ -11,21 +11,23 @@ import * as PIXI from "pixi.js";
  * I will not force this aproach in other examples.
  */
 export class Card extends PIXI.Sprite {
-  public pos;
+  public pos: Position;
   private aspectRatio: number=1.532;
 
   constructor (texture: PIXI.Texture) {
     super(texture);
     this.anchor.set(0.5);
-    const shouldFlip=isMobile()&&getOrientation()==="landscape";
+    this.pos=new Position(0, 0);
+    this.updateLayout();
+  }
 
+  public updateLayout() {
+    const shouldFlip=isMobile()&&getOrientation()==="landscape";
+    // Use your diametric scale logic
     let baseW=isMobile()? 90:perToPixHeight(12);
     let baseH=isMobile()? 147:perToPixHeight(12)*this.aspectRatio;
-
     if(shouldFlip) {
       this.angle=90;
-      // this.width=baseH;
-      // this.height=baseW;
       this.width=baseW;
       this.height=baseH;
     } else {
@@ -33,6 +35,5 @@ export class Card extends PIXI.Sprite {
       this.width=baseW;
       this.height=baseH;
     }
-    this.pos=new Position(50, 50);
   }
 }

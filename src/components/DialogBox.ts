@@ -21,8 +21,12 @@ export class DialogWindow extends PIXI.Container {
   private friction=0.95;
   private minVelocity=0.1;
 
-  constructor () {
+  constructor (widthPer: number, heightPer: number) {
     super();
+
+    if(widthPer) this.windowWidth=widthPer;
+    if(heightPer) this.windowHeight=heightPer;
+
     this.contentHeight=this.windowHeight-this.headerHeight-20;
     // Background
     this.background=new PIXI.Graphics();
@@ -36,10 +40,7 @@ export class DialogWindow extends PIXI.Container {
     headerBg.roundRect(0, 0, this.windowWidth, this.headerHeight, 16);
     headerBg.fill({ color: 0x2d2d44, alpha: 1 });
     this.header.addChild(headerBg);
-    const title=new PIXI.Text({
-      text: 'Dialog',
-      style: windowTitleStyle
-    });
+    const title=new PIXI.Text({ text: 'Dialog', style: windowTitleStyle });
     title.x=20;
     title.y=(this.headerHeight-title.height)/2;
     this.header.addChild(title);

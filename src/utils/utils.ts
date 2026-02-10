@@ -63,10 +63,10 @@ export async function lockLandscape() {
     await document.documentElement.requestFullscreen();
     if(screen.orientation&&(screen.orientation as any).lock) {
       await (screen.orientation as any).lock('landscape');
-      console.log("Orientation locked to landscape!");
+      console.info("Orientation locked to landscape!");
     }
   } catch(err) {
-    console.error("Lock failed:", err);
+    console.warn("Lock failed:", err);
   }
 }
 
@@ -78,7 +78,7 @@ export async function lockPortrait() {
       console.log("Orientation locked to portrait!");
     }
   } catch(err) {
-    console.error("Lock failed:", err);
+    console.warn("Lock failed:", err);
   }
 }
 

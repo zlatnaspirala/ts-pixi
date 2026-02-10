@@ -10,7 +10,7 @@ export class PhoenixFlameGraphics extends PIXI.Container {
   private emitterY: number;
   private initX: number;
   private initY: number;
-  private maxParticles=15;
+  private maxParticles=10;
   private spawnTimer=0;
   private spawnRate=0.05;
   private dirX:number = 1;

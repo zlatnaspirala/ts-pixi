@@ -31,13 +31,13 @@ export class MenuScene extends Scene {
     // arg are percents
     this.graphicsDraws=new PhoenixFlameGraphics(
       isMobile()? getOrientation()=="landscape"? 50:50:50,
-      isMobile()? getOrientation()=="landscape"? 140:110:80,
+      isMobile()? getOrientation()=="landscape"? 140:130:80,
       "star"
     );
     this.addChild(this.graphicsDraws);
     this.graphicsDrawsTop=new PhoenixFlameGraphics(
       isMobile()? getOrientation()=="landscape"? 50:50:50,
-      isMobile()? getOrientation()=="landscape"? -50:-10:80,
+      isMobile()? getOrientation()=="landscape"? -50:-30:80,
       "base", -1);
     this.addChild(this.graphicsDrawsTop);
     this.addFPS=addFPS.bind(this);

@@ -23,6 +23,7 @@ export class MagicWords extends Scene {
   private testFilters: any[]=[];
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private fpsTitle: PIXI.Text|undefined;
   private lastOrientation: string|null=null;
 
   constructor () {
@@ -56,6 +57,7 @@ export class MagicWords extends Scene {
     this.addChild(btnBack);
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
+    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
 
     this.lastOrientation=isMobile()? window.innerWidth>window.innerHeight? "landscape":"portrait":"desktop";
     this.onResize();
@@ -347,17 +349,14 @@ export class MagicWords extends Scene {
 
   onResize() {
     if(!this.winDialog) return;
-
-    const currentOrientation=
-      isMobile()
-        ? window.innerWidth>window.innerHeight? "landscape":"portrait"
-        :"desktop";
-
+    const currentOrientation=isMobile()? window.innerWidth>window.innerHeight? "landscape":"portrait":"desktop";
     if(this.lastOrientation===currentOrientation) return;
-
     this.lastOrientation=currentOrientation;
-
-    // 🔥 Rebuild dialog layout
+    // 🔥 Rebuild dialog layout - not perfect 
     this.rebuildDialog();
+    if(this.fpsText&&this.fpsTitle) {
+      this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
+      this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;
+    }
   }
 }

@@ -16,6 +16,7 @@ export class AceOfShadowsScene extends Scene {
   private totalStackCards=144;
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private fpsTitle: PIXI.Text|undefined;
   private task1: any=0;
 
   constructor () {
@@ -25,11 +26,11 @@ export class AceOfShadowsScene extends Scene {
       this.stack2=new CardStack();
       this.stack1.position.set(
         window.innerWidth/3,
-        isMobile() ? getOrientation()==="portrait" ? window.innerHeight/4 : window.innerHeight/100*22 : window.innerHeight/4
+        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*22:window.innerHeight/4
       );
       this.stack2.position.set(
-        window.innerWidth/3*2, 
-        isMobile() ? getOrientation()==="portrait" ? window.innerHeight/4 : window.innerHeight/100*22 : window.innerHeight/4
+        window.innerWidth/3*2,
+        isMobile()? getOrientation()==="portrait"? window.innerHeight/4:window.innerHeight/100*22:window.innerHeight/4
       );
       this.addChild(this.stack1);
       this.addChild(this.stack2);
@@ -47,6 +48,7 @@ export class AceOfShadowsScene extends Scene {
     this.addChild(btnBack);
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
+    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
   }
 
   update(_deltaMS: number) {
@@ -106,5 +108,10 @@ export class AceOfShadowsScene extends Scene {
     this.stack1.destroy({ children: true });
   }
 
-  onResize() {}
+  onResize() {
+    if(this.fpsText&&this.fpsTitle) {
+      this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
+      this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;
+    }
+  }
 }

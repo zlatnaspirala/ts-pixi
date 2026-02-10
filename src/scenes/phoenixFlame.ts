@@ -19,6 +19,7 @@ interface FlameSprite {
 export class PhoenixFlameScene extends Scene {
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
+  private fpsTitle: PIXI.Text|undefined;
   private flames: FlameSprite[]=[];
   private elapsedTime=0;
   private phoenixContainer: PIXI.Container;
@@ -38,6 +39,7 @@ export class PhoenixFlameScene extends Scene {
 
     this.addFPS=addFPS.bind(this);
     this.fpsText=this.addFPS(this);
+    this.fpsTitle=this.getChildByLabel("fpsTitle") as PIXI.Text;
     this.createFlame();
   }
 
@@ -139,6 +141,11 @@ export class PhoenixFlameScene extends Scene {
         flameData.sprite.y=flameData.baseY;
       }
     });
+
+    if(this.fpsText&&this.fpsTitle) {
+      this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
+      this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;
+    }
   }
 
   destroyScene() {

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
-import { isMobile } from "../utils/utils";
+import { getOrientation, isMobile } from "../utils/utils";
 import { windowTitleStyle } from "../resources/literails";
-import { perToPixWidth } from "../core/position";
+import { perToPixHeight, perToPixWidth } from "../core/position";
 
 export class DialogWindow extends PIXI.Container {
   private background: PIXI.Graphics;
@@ -11,8 +11,8 @@ export class DialogWindow extends PIXI.Container {
   private isDragging=false;
   private dragOffset={ x: 0, y: 0 };
   private windowWidth=isMobile()? perToPixWidth(93):700;
-  private windowHeight=window.innerHeight*0.8;
-  private headerHeight=60;
+  private windowHeight=isMobile()? getOrientation()=="portrait"? perToPixHeight(85):perToPixHeight(80):window.innerHeight*0.8;
+  private headerHeight=isMobile()? 45:60;
   private contentHeight: number;
   // mobile
   private isScrolling=false;

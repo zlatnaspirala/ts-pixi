@@ -46,9 +46,9 @@ export class MenuScene extends Scene {
     }
 
     // arg are percents
-    this.graphicsDraws = new PhoenixFlameGraphics(50, 80, "star");
+    this.graphicsDraws=new PhoenixFlameGraphics(50, 80, "star");
     this.addChild(this.graphicsDraws);
-    this.graphicsDrawsTop = new PhoenixFlameGraphics(50, 10, "base", -1);
+    this.graphicsDrawsTop=new PhoenixFlameGraphics(50, 10, "base", -1);
     this.addChild(this.graphicsDrawsTop);
 
     this.addFPS=addFPS.bind(this);
@@ -101,8 +101,8 @@ export class MenuScene extends Scene {
   }
 
   update(_: number) {
-    if (this.graphicsDraws) this.graphicsDraws.update(_);
-    if (this.graphicsDrawsTop) this.graphicsDrawsTop.update(_);
+    if(this.graphicsDraws) this.graphicsDraws.update(_);
+    if(this.graphicsDrawsTop) this.graphicsDrawsTop.update(_);
     if(this.app&&this.fpsText) this.fpsText.text=`${Math.round(this.app.ticker.FPS)}`;
   }
 
@@ -110,18 +110,13 @@ export class MenuScene extends Scene {
 
   onResize() {
     this.buttons.forEach((btn, index) => { this.positionButton(btn, index); });
-
     if(this.welcomeText&&this.welcomeDialog) {
       this.welcomeText.position.x=this.welcomeDialog.width/2;
       this.welcomeText.position.y=this.welcomeDialog.height/4;
     }
-
     if(this.fpsText&&this.fpsTitle) {
-      this.fpsTitle.x=perToPixWidth(93);
-      this.fpsTitle.y=1;
-      this.fpsText.x=perToPixWidth(93)+30;
-      this.fpsText.y=1;
+      this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
+      this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;
     }
-
   }
 }

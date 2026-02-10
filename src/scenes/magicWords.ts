@@ -31,8 +31,6 @@ export class MagicWords extends Scene {
 
     loadTexture('./assets/textures/default.png').then((tex) => {
       this.avatarTextures.set('default', tex);
-
-
       getDataFromLink(this.link1).then((r: any) => {
         // console.log(r.avatars)
         const avatarPromises=r.avatars.map((a: Avatar) =>
@@ -110,7 +108,7 @@ export class MagicWords extends Scene {
     const container=new PIXI.Container();
     let avatarInfo;
     if(this.avatars.get(line.name)==null||this.avatars.get(line.name)==undefined) {
-      console.log("NO AVATAR REGISTRED NAME DETECT")
+      console.info("No avatar icon data.")
       avatarInfo={
         name: line.name,
         url: "",

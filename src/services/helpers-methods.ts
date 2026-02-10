@@ -1,3 +1,4 @@
+import { isMobile } from "../utils/utils";
 import { perToPixWidth } from "../core/position";
 import * as PIXI from "pixi.js";
 
@@ -39,9 +40,9 @@ export function addFPS(parent: PIXI.Container) {
   const fpsTitle=new PIXI.Text({ text: 'FPS:', style: fpsStyle });
   fpsTitle.label = "fpsTitle";
   const fpsText=new PIXI.Text({ text: '', style: fpsStyle });
-  fpsTitle.x=perToPixWidth(94);
+  fpsTitle.x=isMobile() ? perToPixWidth(86) : perToPixWidth(94);
   fpsTitle.y=1;
-  fpsText.x=perToPixWidth(94) + 30;
+  fpsText.x=isMobile() ? perToPixWidth(86) + 30 : perToPixWidth(94) + 30;
   fpsText.y=1;
   parent.addChild(fpsTitle);
   parent.addChild(fpsText);

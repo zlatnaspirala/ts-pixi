@@ -27,7 +27,7 @@ export class PhoenixFlameGraphics extends PIXI.Container {
 
     this.createStarTexture = createStarTexture.bind(this);
     if (type == "star") this.particleTexture=this.createStarTexture();
-    if (type == "base") this.particleTexture=this.createParticleTexture();
+    else this.particleTexture=this.createParticleTexture();
   }
 
   private createParticleTexture(): PIXI.Texture {

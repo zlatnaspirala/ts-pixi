@@ -54,7 +54,7 @@ export class MenuScene extends Scene {
       screen.orientation.addEventListener('change', () => {
         console.log(`Current orientation is ${screen.orientation.type}`);
         // this.rebuildDialog()
-          this.removeDialog()
+        this.removeDialog()
       });
     }
   }
@@ -144,11 +144,29 @@ export class MenuScene extends Scene {
   destroyScene() {}
 
   onResize() {
-    this.buttons.forEach((btn, index) => { this.positionButton(btn, index); });
-    if(this.welcomeText&&this.welcomeDialog) {
-      this.welcomeText.position.x=this.welcomeDialog.width/2;
-      this.welcomeText.position.y=this.welcomeDialog.height/4;
+    // 1. Recalculate button widths/backgrounds
+    const fixedWidth=isMobile()? (getOrientation()==="portrait"? perToPixWidth(60):perToPixWidth(35)):300;
+    const fixedHeight=isMobile()? 43:63;
+
+    this.buttons.forEach((container, index) => {
+      this.positionButton(container, index);
+
+      // Reach into the container to resize the background graphic
+      const bg=container.getChildAt(0) as PIXI.Graphics;
+      if(bg) {
+        bg.clear()
+          .roundRect(-fixedWidth/2, -fixedHeight/2, fixedWidth, fixedHeight, 15)
+          .fill({ color: 0x000000, alpha: 0.6 })
+          .stroke({ width: 2, color: 0x3498db, alpha: 1 });
+      }
+    });
+
+    // 2. Handle the Welcome Dialog (Rebuild is safest for layout shifts)
+    if(this.welcomeDialog) {
+      this.rebuildDialog();
     }
+
+    // 3. Update FPS position
     if(this.fpsText&&this.fpsTitle) {
       this.fpsTitle.x=isMobile()? perToPixWidth(86):perToPixWidth(94);
       this.fpsText.x=isMobile()? perToPixWidth(86)+30:perToPixWidth(94)+30;

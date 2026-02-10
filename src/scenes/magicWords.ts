@@ -12,6 +12,8 @@ import { createGlowFilter } from "../shaders/base";
 import { magicWordsTextStyle } from "../resources/literails";
 import { DialogWindow } from "../components/dialogBox";
 
+const TIMEOUT_MS=500;
+
 export class MagicWords extends Scene {
   private link1: string="https://private-624120-softgamesassignment.apiary-mock.com/v2/magicwords";
   private avatars=new Map<string, Avatar>();
@@ -29,21 +31,30 @@ export class MagicWords extends Scene {
   constructor () {
     super();
     this.winDialog=null;
-
     loadTexture('./assets/textures/default.png').then((tex) => {
       this.avatarTextures.set('default', tex);
       getDataFromLink(this.link1).then((r: any) => {
-        // console.log(r.avatars)
         const avatarPromises=r.avatars.map((a: Avatar) =>
-          loadUrlTexture(a.url).then((tex) => {
-            this.avatarTextures.set(a.name, tex);
-            this.avatars.set(a.name, a);
-          })
+          this.loadWithTimeout(loadUrlTexture(a.url), TIMEOUT_MS)
+            .then((tex) => {
+              this.avatarTextures.set(a.name, tex);
+              this.avatars.set(a.name, a);
+            })
+            .catch(() => {
+              console.warn(`Skipping avatar for ${a.name} due to slow/broken link.`);
+              // Fallback: set the default texture for this name so the UI doesn't break
+              if(this.avatarTextures.has('default')) {
+                this.avatarTextures.set(a.name, this.avatarTextures.get('default')!);
+              }
+            })
         );
         const emojiPromises=r.emojies.map((emoji: Emoji) =>
-          loadUrlTexture(emoji.url).then((tex) => { this.emojiTextures.set(emoji.name, tex) })
+          this.loadWithTimeout(loadUrlTexture(emoji.url), TIMEOUT_MS)
+            .then((tex) => { this.emojiTextures.set(emoji.name, tex) })
+            .catch(() => console.warn(`Emoji ${emoji.name} timed out.`))
         );
-        Promise.all([...avatarPromises, ...emojiPromises]).then(() => {
+        // Use allSettled so we render as soon as the "good" links are done or "bad" links timeout
+        Promise.allSettled([...avatarPromises, ...emojiPromises]).then(() => {
           this.dialogLines=r.dialogue;
           this.renderDialog();
         });
@@ -64,6 +75,16 @@ export class MagicWords extends Scene {
     // mobile browsers sometimes lag
     setTimeout(() => this.onResize(), 100);
   }
+
+  private loadWithTimeout=(promise: Promise<PIXI.Texture>, timeout: number) => {
+
+    return Promise.race([
+      promise,
+      new Promise<PIXI.Texture>((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), timeout)
+      )
+    ]);
+  };
 
   private renderDialog() {
     let yPos=20;

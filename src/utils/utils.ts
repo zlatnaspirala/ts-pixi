@@ -20,6 +20,15 @@ export function enableFullscreen() {
   // fullscreenEnabled=true;
 }
 
+export function getIsFullscreen() {
+  return !!(
+    document.fullscreenElement||
+    (document as any).webkitFullscreenElement||
+    (document as any).mozFullScreenElement||
+    (document as any).msFullscreenElement
+  );
+}
+
 export function onFirstInteraction() {
   enableFullscreen();
   if(FORCE_FULL_SCREEN===false) isMobile()? window.removeEventListener('touchend', onFirstInteraction):

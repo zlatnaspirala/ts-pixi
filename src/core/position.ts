@@ -1,3 +1,4 @@
+import { getIsFullscreen } from "../utils/utils";
 import { EasingFn } from "../types/appDefinitions";
 
 const Easing: Record<string, EasingFn>={
@@ -88,25 +89,28 @@ export class Position {
   }
 
   rebase(newX: number, newY: number) {
-    // Calculate how far we were through the tween (0 to 1)
     const elapsed=performance.now()-this._startTime;
     const t=Math.min(elapsed/this._duration, 1);
-
-    // Update the 'from' and 'to' so the current 'x/y' stays visually consistent
-    // but the destination is corrected for the new layout.
     this._from.x=newX;
     this._from.y=newY;
-
-    // Optional: reduce duration slightly to make the "snap" feel like a "catch-up"
     this._duration=this._duration*(1-t);
     this._startTime=performance.now();
   }
 }
 
 export function perToPixWidth(p: number) {
-  return window.innerWidth/100*p;
+  if(getIsFullscreen()==true) {
+    return window.innerWidth/100*p
+  }
+  else {
+    return screen.width/100*p;
+  }
 }
 
 export function perToPixHeight(p: number) {
-  return window.innerHeight/100*p;
+  if(getIsFullscreen()==true) {
+    return window.innerHeight/100*p;
+  } else {
+    return screen.height/100*p;
+  }
 }

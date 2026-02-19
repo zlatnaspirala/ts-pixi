@@ -1,5 +1,5 @@
 {
-  "name": "pixi-ts-soft-game",
+  "name": "pixi-webgpu-startup",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

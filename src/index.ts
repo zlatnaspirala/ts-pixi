@@ -11,10 +11,10 @@ export * from "./core/sceneManager";
 export * from "./resources/literails";
 export * from "./resources/textures";
 
-export * from "./scenes/aceOfShadowsScene";
+export * from "./scenes/poker";
 export * from "./scenes/magicWords";
 export * from "./scenes/menuScene";
-export * from "./scenes/phoenixFlame";
+export * from "./scenes/anims";
 
 export * from "./services/helpers-methods";
 

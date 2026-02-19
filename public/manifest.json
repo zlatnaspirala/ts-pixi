@@ -1,7 +1,7 @@
 {
-  "name": "SOFTGAMES - TESTCASE",
-  "short_name": "ts-pixi",
-  "description": "Test pixi power",
+  "name": "Zlatnaspirala-test-webgpu-pixi",
+  "short_name": "matrix-pixi",
+  "description": "Test pixi - ",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "orientation": "portrait",

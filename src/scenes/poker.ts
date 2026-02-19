@@ -10,7 +10,7 @@ import { SceneManager } from "../core/sceneManager";
 import { lockLandscape, getOrientation, isMobile, lockPortrait } from "../utils/utils";
 import { FORCE_MOBILE_LOCK_SCREEN } from "../appConfig";
 
-export class AceOfShadowsScene extends Scene {
+export class Poker extends Scene {
   private entities: any[]=[];
   private stack1: CardStack|any;
   private stack2: CardStack|any;

@@ -16,7 +16,7 @@ interface FlameSprite {
   scaleBase: number;
 }
 
-export class PhoenixFlameScene extends Scene {
+export class Animations extends Scene {
   private addFPS: Function;
   private fpsText: PIXI.Text|undefined;
   private fpsTitle: PIXI.Text|undefined;

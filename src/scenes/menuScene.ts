@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js";
 import { Scene } from "../core/scene";
-import { AceOfShadowsScene } from "./aceOfShadowsScene";
+import { Poker } from "./poker";
 import { SceneManager } from "../core/sceneManager";
 import { perToPixHeight, perToPixWidth } from "../core/position";
 import { mainMenuBtnStyle } from "../resources/literails";
 import { MagicWords } from "./magicWords";
-import { PhoenixFlameScene } from "./phoenixFlame";
+import { Animations } from "./anims";
 import { addFPS } from "../services/helpers-methods";
 import { getOrientation, isMobile } from "../utils/utils";
 import gsap from "gsap";
@@ -21,9 +21,9 @@ export class MenuScene extends Scene {
 
   constructor () {
     super();
-    this.addBtn("Ace of Shadows", AceOfShadowsScene);
+    this.addBtn("Ace of Shadows", Poker);
     this.addBtn("Magic Words", MagicWords);
-    this.addBtn("Phoenix Flame", PhoenixFlameScene);
+    this.addBtn("Phoenix Flame", Animations);
     // arg are percents
     this.graphicsDraws=new PhoenixFlameGraphics(
       isMobile()? getOrientation()=="landscape"? 50:50:50,
